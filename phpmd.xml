@@ -44,18 +44,24 @@
     </rule>
     
     <!-- Naming Rules (with WordPress exceptions) -->
-    <rule ref="rulesets/naming.xml">
-        <!-- Exclude CamelCaseClassName - WordPress uses Snake_Case for class names -->
-        <exclude name="CamelCaseClassName"/>
-        <!-- Exclude CamelCaseMethodName - WordPress uses snake_case for method names -->
-        <exclude name="CamelCaseMethodName"/>
-        <!-- Exclude CamelCaseVariableName - WordPress uses snake_case for variables -->
-        <exclude name="CamelCaseVariableName"/>
-        <!-- Exclude CamelCaseParameterName - WordPress uses snake_case for parameters -->
-        <exclude name="CamelCaseParameterName"/>
-    </rule>
+    <!-- Import all naming rules individually and exclude WordPress-incompatible ones -->
+    <rule ref="rulesets/naming.xml/ShortVariable"/>
+    <rule ref="rulesets/naming.xml/LongVariable"/>
+    <rule ref="rulesets/naming.xml/ShortMethodName"/>
+    <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass"/>
+    <rule ref="rulesets/naming.xml/ConstantNamingConventions"/>
+    <rule ref="rulesets/naming.xml/BooleanGetMethodName"/>
+    <!-- Explicitly exclude WordPress-incompatible naming rules -->
+    <!-- <rule ref="rulesets/naming.xml/CamelCaseClassName"/> - Excluded for WordPress -->
+    <!-- <rule ref="rulesets/naming.xml/CamelCaseMethodName"/> - Excluded for WordPress -->
+    <!-- <rule ref="rulesets/naming.xml/CamelCaseVariableName"/> - Excluded for WordPress -->
+    <!-- <rule ref="rulesets/naming.xml/CamelCaseParameterName"/> - Excluded for WordPress -->
     
     <!-- Unused Code Rules -->
     <rule ref="rulesets/unusedcode.xml"/>
+
+    <!-- WordPress-specific exclusions (additional safety) -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
 
 </ruleset>
