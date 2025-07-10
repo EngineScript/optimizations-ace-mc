@@ -30,8 +30,15 @@
         <exclude name="ExitExpression"/>
     </rule>
     
-    <!-- Naming Rules -->
-    <rule ref="rulesets/naming.xml"/>
+    <!-- Naming Rules (with WordPress exceptions) -->
+    <rule ref="rulesets/naming.xml">
+        <!-- Exclude CamelCaseClassName - WordPress uses Snake_Case for class names -->
+        <exclude name="CamelCaseClassName"/>
+        <!-- Exclude CamelCaseMethodName - WordPress uses snake_case for method names -->
+        <exclude name="CamelCaseMethodName"/>
+        <!-- Exclude CamelCaseVariableName - WordPress uses snake_case for variables -->
+        <exclude name="CamelCaseVariableName"/>
+    </rule>
     
     <!-- Unused Code Rules -->
     <rule ref="rulesets/unusedcode.xml"/>

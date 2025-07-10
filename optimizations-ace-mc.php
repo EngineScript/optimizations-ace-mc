@@ -8,12 +8,11 @@
  * Author URI: https://github.com/EngineScript
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: optimizations-ace-mc
+ * Text Domain: Optimizations-ACE-MC
  * Domain Path: /languages
  * Requires at least: 6.5
- * Tested up to: 6.7
+ * Tested up to: 6.8
  * Requires PHP: 7.4
- * Network: false
  *
  * @package OptimizationsAceMc
  */
@@ -38,7 +37,7 @@ class Optimizations_Ace_Mc {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var Optimizations_Ace_Mc
+	 * @var Optimizations_Ace_Mc|null
 	 */
 	protected static $instance = null;
 
@@ -48,7 +47,7 @@ class Optimizations_Ace_Mc {
 	 * @return Optimizations_Ace_Mc
 	 */
 	public static function instance() {
-		if ( is_null( self::$instance ) ) {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
@@ -69,7 +68,7 @@ class Optimizations_Ace_Mc {
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain(
-			'optimizations-ace-mc',
+			'Optimizations-ACE-MC',
 			false,
 			dirname( OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME ) . '/languages/'
 		);

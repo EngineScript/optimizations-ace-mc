@@ -53,6 +53,7 @@ jobs:
           cp README.md optimizations-ace-mc/
           cp CHANGELOG.md optimizations-ace-mc/
           cp LICENSE optimizations-ace-mc/ || echo "No LICENSE file found"
+          [ -d languages ] && cp -r languages optimizations-ace-mc/ || echo "No languages directory found"
           zip -r optimizations-ace-mc-${{ steps.get_version.outputs.version }}.zip optimizations-ace-mc
 
       - name: Get changelog entry

@@ -168,7 +168,6 @@ jobs:
           
           # Copy directories if they exist
           [ -d assets ] && cp -r assets build/optimizations-ace-mc/ || echo "No assets directory found"
-          [ -d includes ] && cp -r includes build/optimizations-ace-mc/ || echo "No includes directory found"
           [ -d languages ] && cp -r languages build/optimizations-ace-mc/ || echo "No languages directory found"
           [ -d templates ] && cp -r templates build/optimizations-ace-mc/ || echo "No templates directory found"
           

@@ -8,7 +8,6 @@
 core:
   - changed-files:
     - any-glob-to-any-file: optimizations-ace-mc.php
-    - any-glob-to-any-file: includes/**/*
     - any-glob-to-any-file: assets/js/**/*
 
 # Frontend related changes
