@@ -14,6 +14,38 @@ msgstr ""
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: optimizations-ace-mc\n"
 
-#: optimizations-ace-mc.php:106
-msgid "You are not currently logged in."
+#: optimizations-ace-mc.php:170
+msgid "Order Count"
+msgstr ""
+
+#: optimizations-ace-mc.php:260
+msgid "Certifications:"
+msgstr ""
+
+#: optimizations-ace-mc.php:287
+msgid "Registration Date"
+msgstr ""
+
+#: optimizations-ace-mc.php:306
+msgid "Unknown"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Optimizations ACE MC"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/EngineScript/Optimizations-ACE-MC"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "A lightweight WordPress optimization plugin with pre-configured performance enhancements for WooCommerce, WP Store Locator, and WordPress admin."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "EngineScript"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://github.com/EngineScript"
 msgstr ""

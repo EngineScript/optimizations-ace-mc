@@ -8,7 +8,7 @@
  * Author URI: https://github.com/EngineScript
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: Optimizations-ACE-MC
+ * Text Domain: optimizations-ace-mc
  * Domain Path: /languages
  * Requires at least: 6.5
  * Tested up to: 6.8
@@ -68,7 +68,7 @@ class Optimizations_Ace_Mc {
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain(
-			'Optimizations-ACE-MC',
+			'optimizations-ace-mc',
 			false,
 			dirname( OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME ) . '/languages/'
 		);
@@ -167,7 +167,7 @@ class Optimizations_Ace_Mc {
 	 * @return array Modified columns.
 	 */
 	public function add_user_order_count_column( $columns ) {
-		$columns['user_order_count'] = __( 'Order Count', 'Optimizations-ACE-MC' );
+		$columns['user_order_count'] = __( 'Order Count', 'optimizations-ace-mc' );
 		return $columns;
 	}
 
@@ -216,12 +216,12 @@ class Optimizations_Ace_Mc {
 			if ( count( $terms ) > 1 ) {
 				$location_terms = array();
 				foreach ( $terms as $term ) {
-					if ( isset( $term->name ) ) {
+					if ( ! empty( $term->name ) ) {
 						$location_terms[] = sanitize_text_field( $term->name );
 					}
 				}
 				$store_meta['terms'] = implode( ', ', $location_terms );
-			} elseif ( isset( $terms[0]->name ) ) {
+			} elseif ( ! empty( $terms[0]->name ) ) {
 				$store_meta['terms'] = sanitize_text_field( $terms[0]->name );
 			}
 		}
@@ -247,7 +247,7 @@ class Optimizations_Ace_Mc {
 
 		// Include the category names.
 		$info_window_template .= "\t\t" . '<% if ( terms ) { %>' . "\r\n";
-		$info_window_template .= "\t\t" . '<p>' . esc_html__( 'Certifications:', 'Optimizations-ACE-MC' ) . ' <%= terms %></p>' . "\r\n";
+		$info_window_template .= "\t\t" . '<p>' . esc_html__( 'Certifications:', 'optimizations-ace-mc' ) . ' <%= terms %></p>' . "\r\n";
 		$info_window_template .= "\t\t" . '<% } %>' . "\r\n";
 
 		$info_window_template .= "\t\t" . '<%= createInfoWindowActions( id ) %>' . "\r\n";
@@ -274,7 +274,7 @@ class Optimizations_Ace_Mc {
 	 * @return array
 	 */
 	public function add_user_registration_date_column( $columns ) {
-		$columns['registration_date'] = __( 'Registration Date', 'Optimizations-ACE-MC' );
+		$columns['registration_date'] = __( 'Registration Date', 'optimizations-ace-mc' );
 		return $columns;
 	}
 
@@ -293,7 +293,7 @@ class Optimizations_Ace_Mc {
 				$date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 				return esc_html( wp_date( $date_format, strtotime( $registration_date ) ) );
 			}
-			return esc_html__( 'Unknown', 'Optimizations-ACE-MC' );
+			return esc_html__( 'Unknown', 'optimizations-ace-mc' );
 		}
 		return $output;
 	}
