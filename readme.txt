@@ -5,8 +5,8 @@ Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 1.0.1
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License: GPLv3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 A lightweight WordPress optimization plugin with pre-configured performance enhancements.
 
@@ -48,6 +48,13 @@ No, this plugin is designed to improve performance by removing unnecessary code 
 Yes, this plugin focuses on basic optimizations and should work alongside other optimization plugins.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed PHPStan compatibility issues with WP Store Locator functions
+* Improved PHPMD configuration for WordPress coding standards
+* Enhanced error handling for missing plugin dependencies
+* Updated singleton pattern to avoid static analysis warnings
+* Fixed WP_Term property access validation
 
 = 1.0.0 =
 * Initial release
