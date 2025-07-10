@@ -66,7 +66,7 @@ class Optimizations_Ace_Mc {
 	/**
 	 * Load plugin textdomain.
 	 */
-	private function load_textdomain() {
+	public function load_textdomain() {
 		load_plugin_textdomain(
 			'optimizations-ace-mc',
 			false,
