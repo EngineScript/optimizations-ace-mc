@@ -1,4 +1,4 @@
-# This workflow runs continuous integration checks on the Simple WP Optimizer plugin.
+# This workflow runs continuous integration checks on the Optimizations ACE MC plugin.
 # It performs code linting for both PHP and JavaScript files and builds the plugin package.
 # The workflow is triggered on push to main branch and on pull requests to ensure code quality.
 # It creates and stores a plugin zip file as an artifact that can be used for testing.

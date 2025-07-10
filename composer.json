@@ -1,6 +1,6 @@
 {
-  "name": "enginescript/simple-wp-optimizer",
-  "description": "Simple WP Optimizer - A lightweight WordPress optimization plugin",
+  "name": "enginescript/optimizations-ace-mc",
+  "description": "Optimizations ACE MC - A lightweight WordPress optimization plugin",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "authors": [

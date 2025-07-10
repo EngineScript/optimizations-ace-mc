@@ -613,7 +613,7 @@ jobs:
               convertWarningsToExceptions="true"
           >
               <testsuites>
-                  <testsuite name="Simple WP Optimizer">
+                  <testsuite name="Optimizations ACE MC">
                       <directory prefix="test-" suffix=".php">./tests/</directory>
                   </testsuite>
               </testsuites>

@@ -1,4 +1,4 @@
-# This workflow automates the release process for the Simple WP Optimizer plugin.
+# This workflow automates the release process for the Optimizations ACE MC plugin.
 # It extracts the version number from the main plugin file, checks if a release already exists,
 # creates a zip file with the plugin contents, extracts release notes from the changelog,
 # creates a GitHub release with the zip file attached, and updates version references in the README.
