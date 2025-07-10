@@ -5,7 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [Unreleased]
+
+## [1.0.1] - 2025-07-10
+
+### Fixed
+- **PHPStan compatibility:**
+  - Added function_exists() checks for WP Store Locator functions to prevent errors when plugin is not installed
+  - Fixed WP_Term property access using !empty() instead of isset() to satisfy PHPStan analysis
+  - Added PHPStan ignore rules for WP Store Locator functions in configuration
+- **PHPMD configuration:**
+  - Updated PHPMD ruleset to properly exclude WordPress naming conventions (snake_case)
+  - Fixed camelCase naming rule conflicts with WordPress coding standards
+- **Code quality improvements:**
+  - Improved error handling for missing plugin dependencies
+  - Enhanced static analysis compliance
+
+### Changed
+- Updated singleton pattern implementation to avoid PHPStan static access warnings
+- Improved text domain consistency throughout the codebase
 
 ### Added
 - Initial plugin structure

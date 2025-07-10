@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Optimizations ACE MC plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Optimizations ACE MC 1.0.0\n"
+"Project-Id-Version: Optimizations ACE MC 1.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/EngineScript/Optimizations-ACE-MC/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
