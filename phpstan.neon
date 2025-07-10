@@ -18,3 +18,8 @@ parameters:
         - '#Variable \$post might not be defined#'
         # Ignore singleton pattern type checking issues
         - '#Call to function is_null\(\) with .* will always evaluate to false#'
+        # Ignore WP Store Locator functions that may not be available during analysis
+        - '#Function wpsl_store_header_template not found#'
+        - '#Function wpsl_address_format_placeholders not found#'
+        # Ignore WP_Term property checks as they are always strings but we need to check for empty values
+        - '#Property WP_Term::\$name \(string\) in isset\(\) is not nullable#'
