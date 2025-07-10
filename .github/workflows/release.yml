@@ -29,7 +29,7 @@ jobs:
       - name: Get latest version
         id: get_version
         run: |
-          VERSION=$(grep -oP "Version: \K[0-9]+\.[0-9]+\.[0-9]+" simple-wp-optimizer.php)
+          VERSION=$(grep -oP "Version: \K[0-9]+\.[0-9]+\.[0-9]+" optimizations-ace-mc.php)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Found version: $VERSION"
 
@@ -48,12 +48,12 @@ jobs:
       - name: Create zip file
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          mkdir -p simple-wp-optimizer
-          cp simple-wp-optimizer.php simple-wp-optimizer/
-          cp README.md simple-wp-optimizer/
-          cp CHANGELOG.md simple-wp-optimizer/
-          cp LICENSE simple-wp-optimizer/ || echo "No LICENSE file found"
-          zip -r simple-wp-optimizer-${{ steps.get_version.outputs.version }}.zip simple-wp-optimizer
+          mkdir -p optimizations-ace-mc
+          cp optimizations-ace-mc.php optimizations-ace-mc/
+          cp README.md optimizations-ace-mc/
+          cp CHANGELOG.md optimizations-ace-mc/
+          cp LICENSE optimizations-ace-mc/ || echo "No LICENSE file found"
+          zip -r optimizations-ace-mc-${{ steps.get_version.outputs.version }}.zip optimizations-ace-mc
 
       - name: Get changelog entry
         if: steps.check_release.outputs.exists == 'false'
@@ -79,7 +79,7 @@ jobs:
             3. Activate the plugin
             
             [Full Documentation](https://github.com/${{ github.repository }})
-          files: simple-wp-optimizer-${{ steps.get_version.outputs.version }}.zip
+          files: optimizations-ace-mc-${{ steps.get_version.outputs.version }}.zip
           draft: false
           prerelease: false
           generate_release_notes: false
@@ -94,7 +94,7 @@ jobs:
           TMP_FILE=$(mktemp)
           
           # Update the version badge with the new version and logo
-          sed -E 's/\[\!Version\]\(https:\/\/img\.shields\.io\/badge\/Version-[0-9]+\.[0-9]+\.[0-9]+-orange\.svg\?logo=github\)\]\(https:\/\/github\.com\/EngineScript\/Simple-WP-Optimizer\/releases\/latest\/download\/simple-wp-optimizer-[0-9]+\.[0-9]+\.[0-9]+\.zip\)/\[\!Version\]\(https:\/\/img\.shields\.io\/badge\/Version-'"$VERSION"'-orange\.svg\?logo=github\)\]\(https:\/\/github\.com\/EngineScript\/Simple-WP-Optimizer\/releases\/latest\/download\/simple-wp-optimizer-'"$VERSION"'\.zip\)/g' "$README_FILE" > "$TMP_FILE"
+          sed -E 's/\[\!Version\]\(https:\/\/img\.shields\.io\/badge\/Version-[0-9]+\.[0-9]+\.[0-9]+-orange\.svg\?logo=github\)\]\(https:\/\/github\.com\/EngineScript\/Optimizations-ACE-MC\/releases\/latest\/download\/optimizations-ace-mc-[0-9]+\.[0-9]+\.[0-9]+\.zip\)/\[\!Version\]\(https:\/\/img\.shields\.io\/badge\/Version-'"$VERSION"'-orange\.svg\?logo=github\)\]\(https:\/\/github\.com\/EngineScript\/Optimizations-ACE-MC\/releases\/latest\/download\/optimizations-ace-mc-'"$VERSION"'\.zip\)/g' "$README_FILE" > "$TMP_FILE"
           
           # Replace file if changes were made
           if ! cmp -s "$README_FILE" "$TMP_FILE"; then

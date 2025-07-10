@@ -193,7 +193,7 @@ jobs:
         run: |
           # Use WordPress-specific PHPMD configuration (WordPress snake_case compatible)
           echo "Using WordPress-specific PHPMD configuration (WordPress snake_case compatible)..."
-          phpmd simple-wp-optimizer.php text phpmd.xml
+          phpmd optimizations-ace-mc.php text phpmd.xml
 
       - name: Create issue on PHPMD failure
         if: ${{ failure() }}
@@ -555,7 +555,7 @@ jobs:
           /**
            * PHPUnit bootstrap file for plugin tests.
            *
-           * @package Simple_WP_Optimizer
+           * @package OptimizationsAceMc
            */
           
           require_once '/tmp/wordpress-tests-lib/includes/functions.php';
@@ -565,7 +565,7 @@ jobs:
                   return;
               }, 0);
               
-              require dirname( dirname( __FILE__ ) ) . '/simple-wp-optimizer.php';
+              require dirname( dirname( __FILE__ ) ) . '/optimizations-ace-mc.php';
           }
           
           tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
@@ -578,14 +578,14 @@ jobs:
           cat > tests/test-plugin.php << 'EOF'
           <?php
           /**
-           * Class Test_Simple_WP_Optimizer
+           * Class Test_Optimizations_Ace_Mc
            *
-           * @package Simple_WP_Optimizer
+           * @package OptimizationsAceMc
            */
           
-          class Test_Simple_WP_Optimizer extends WP_UnitTestCase {
+          class Test_Optimizations_Ace_Mc extends WP_UnitTestCase {
               public function test_plugin_loaded() {
-                  $this->assertTrue(function_exists('es_optimizer_init_settings'), 'Plugin was not loaded correctly');
+                  $this->assertTrue(class_exists('Optimizations_Ace_Mc'), 'Plugin was not loaded correctly');
               }
               
               public function test_wordpress_version_compatibility() {

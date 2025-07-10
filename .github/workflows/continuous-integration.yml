@@ -161,27 +161,27 @@ jobs:
         
       - name: Create plugin package
         run: |
-          mkdir -p build/simple-wp-optimizer
+          mkdir -p build/optimizations-ace-mc
           
           # Copy main plugin file
-          cp simple-wp-optimizer.php build/simple-wp-optimizer/
+          cp optimizations-ace-mc.php build/optimizations-ace-mc/
           
           # Copy directories if they exist
-          [ -d assets ] && cp -r assets build/simple-wp-optimizer/ || echo "No assets directory found"
-          [ -d includes ] && cp -r includes build/simple-wp-optimizer/ || echo "No includes directory found"
-          [ -d languages ] && cp -r languages build/simple-wp-optimizer/ || echo "No languages directory found"
-          [ -d templates ] && cp -r templates build/simple-wp-optimizer/ || echo "No templates directory found"
+          [ -d assets ] && cp -r assets build/optimizations-ace-mc/ || echo "No assets directory found"
+          [ -d includes ] && cp -r includes build/optimizations-ace-mc/ || echo "No includes directory found"
+          [ -d languages ] && cp -r languages build/optimizations-ace-mc/ || echo "No languages directory found"
+          [ -d templates ] && cp -r templates build/optimizations-ace-mc/ || echo "No templates directory found"
           
           # Copy additional files if they exist
-          [ -f readme.txt ] && cp readme.txt build/simple-wp-optimizer/ || echo "No readme.txt found"
-          [ -f LICENSE ] && cp LICENSE build/simple-wp-optimizer/ || echo "No LICENSE file found"
+          [ -f readme.txt ] && cp readme.txt build/optimizations-ace-mc/ || echo "No readme.txt found"
+          [ -f LICENSE ] && cp LICENSE build/optimizations-ace-mc/ || echo "No LICENSE file found"
           
           # Create zip file
           cd build
-          zip -r simple-wp-optimizer.zip simple-wp-optimizer
+          zip -r optimizations-ace-mc.zip optimizations-ace-mc
           
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: simple-wp-optimizer
-          path: build/simple-wp-optimizer.zip
+          name: optimizations-ace-mc
+          path: build/optimizations-ace-mc.zip
