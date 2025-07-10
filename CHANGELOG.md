@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for PHP 7.4+
 - Internationalization support
 - Security checks and validation
+- **WooCommerce optimizations:**
+  - Show empty product categories in archives
+  - Hide category product count in product archives
+  - User order count column in admin users table (sortable)
+- **WP Store Locator optimizations:**
+  - Display store categories in store info windows
+  - Disable REST API for store locator post type
+  - Custom info window template with certifications
+- **WordPress admin optimizations:**
+  - User registration date column in admin users table (sortable)
 
 ### Changed
 - Updated plugin to use WordPress 6.8 compatibility
@@ -27,7 +37,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed invalid 'Network' header from plugin file
 - WordPress compatibility testing up to version 6.8
 - PHPMD warnings for WordPress naming conventions
+- **Security improvements:**
+  - Added proper capability checks for admin modifications
+  - Added WooCommerce and WP Store Locator dependency checks
+  - Proper data sanitization and escaping for all output
+  - Fixed function name collision in user column sorting
+  - Added input validation with `absint()` for user IDs
 
-### Removed
-- Unused admin interface files (keeping single-file structure)
-- Invalid plugin headers
+### Security
+- All user inputs are properly sanitized and validated
+- Capability checks ensure only authorized users can access admin features
+- Plugin dependencies are verified before executing related functionality
+- All output is properly escaped to prevent XSS attacks
