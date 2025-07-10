@@ -13,10 +13,23 @@
         <exclude name="ElseExpression"/>
         <!-- Exclude MissingImport - WordPress core classes are auto-loaded -->
         <exclude name="MissingImport"/>
+        <!-- Exclude StaticAccess - Allow for singleton patterns -->
+        <exclude name="StaticAccess"/>
     </rule>
     
     <!-- Code Size Rules -->
-    <rule ref="rulesets/codesize.xml"/>
+    <rule ref="rulesets/codesize.xml">
+        <!-- Override TooManyPublicMethods for WordPress plugins that need hook callbacks -->
+        <exclude name="TooManyPublicMethods"/>
+    </rule>
+    
+    <!-- Custom rule: Allow more public methods for WordPress plugins -->
+    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+        <properties>
+            <!-- WordPress plugins often need many public hook callbacks -->
+            <property name="maxmethods" value="15"/>
+        </properties>
+    </rule>
     
     <!-- Controversial Rules (with WordPress exceptions) -->
     <rule ref="rulesets/controversial.xml">
@@ -38,6 +51,8 @@
         <exclude name="CamelCaseMethodName"/>
         <!-- Exclude CamelCaseVariableName - WordPress uses snake_case for variables -->
         <exclude name="CamelCaseVariableName"/>
+        <!-- Exclude CamelCaseParameterName - WordPress uses snake_case for parameters -->
+        <exclude name="CamelCaseParameterName"/>
     </rule>
     
     <!-- Unused Code Rules -->

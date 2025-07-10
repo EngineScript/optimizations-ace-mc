@@ -30,16 +30,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed text domain to match plugin slug format
 - Improved singleton pattern implementation
 - Updated PHPMD configuration for WordPress coding standards
-- Standardized text domain to 'optimizations-ace-mc' throughout codebase
+- Standardized text domain to 'optimizations-ace-mc' (lowercase, hyphenated) throughout codebase
 
 ### Fixed
-- Text domain mismatch (now uses 'optimizations-ace-mc')
+- Text domain mismatch (now uses 'optimizations-ace-mc' consistently)
 - PHPStan type checking issues with singleton pattern
 - Removed invalid 'Network' header from plugin file
 - WordPress compatibility testing up to version 6.8
 - PHPMD warnings for WordPress naming conventions
 - WP Store Locator function existence checks to prevent errors when plugin not installed
 - WP_Term property checks using empty() instead of isset() for better PHPStan compatibility
+- PHPMD configuration updated to properly exclude WordPress-specific naming patterns
+- Reduced public method count by making internal methods private
+- Improved singleton pattern implementation to avoid static access warnings
 - **Security improvements:**
   - Added proper capability checks for admin modifications
   - Added WooCommerce and WP Store Locator dependency checks

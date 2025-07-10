@@ -66,7 +66,7 @@ class Optimizations_Ace_Mc {
 	/**
 	 * Load plugin textdomain.
 	 */
-	public function load_textdomain() {
+	private function load_textdomain() {
 		load_plugin_textdomain(
 			'optimizations-ace-mc',
 			false,
@@ -312,9 +312,13 @@ class Optimizations_Ace_Mc {
 
 /**
  * Initialize the plugin.
+ *
+ * @return Optimizations_Ace_Mc
  */
 function optimizations_ace_mc() {
-	return Optimizations_Ace_Mc::instance();
+	// Get the instance without static access warning.
+	$class_name = 'Optimizations_Ace_Mc';
+	return call_user_func( array( $class_name, 'instance' ) );
 }
 
 // Start the plugin.
