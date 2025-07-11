@@ -96,7 +96,5 @@
     
     <!-- Use colors in output -->
     <arg name="colors"/>
-    
-    <!-- Show results with warnings -->
-    <arg name="--warning-severity=0"/>
+
 </ruleset>
