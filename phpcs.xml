@@ -22,9 +22,6 @@
         <!-- Allow longer lines for readability -->
         <exclude name="Generic.Files.LineLength"/>
         
-        <!-- WordPress allows assignment in conditions for specific patterns -->
-        <exclude name="WordPress.CodeAnalysis.AssignmentInCondition"/>
-        
         <!-- Allow direct database queries when using $wpdb properly -->
         <exclude name="WordPress.DB.DirectDatabaseQuery"/>
     </rule>
