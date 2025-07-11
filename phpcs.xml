@@ -43,7 +43,6 @@
     <rule ref="WordPress.WhiteSpace.ControlStructureSpacing"/>
     <rule ref="WordPress.WhiteSpace.OperatorSpacing"/>
     <rule ref="WordPress.WhiteSpace.CastStructureSpacing"/>
-    <rule ref="WordPress.WhiteSpace.ArrowSpacing"/>
 
     <!-- Enforce WordPress indentation standards -->
     <rule ref="WordPress.Arrays.ArrayIndentation"/>
