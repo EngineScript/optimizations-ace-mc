@@ -19,7 +19,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-	die;
+    die;
 }
 
 // Define plugin constants.
@@ -34,113 +34,113 @@ define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
  */
 class Optimizations_Ace_Mc {
 
-	/**
-	 * The single instance of the class.
-	 *
-	 * @var Optimizations_Ace_Mc|null
-	 */
-	protected static $instance = null;
+    /**
+     * The single instance of the class.
+     *
+     * @var Optimizations_Ace_Mc|null
+     */
+    protected static $instance = null;
 
-	/**
-	 * Main instance.
-	 *
-	 * @return Optimizations_Ace_Mc
-	 */
-	public static function instance() {
-		if ( null === self::$instance ) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}
+    /**
+     * Main instance.
+     *
+     * @return Optimizations_Ace_Mc
+     */
+    public static function instance() {
+        if ( null === self::$instance ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
-	/**
-	 * Constructor.
-	 */
-	public function __construct() {
-		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
-		
-		// Initialize optimizations.
-		$this->init_optimizations();
-	}
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+        
+        // Initialize optimizations.
+        $this->init_optimizations();
+    }
 
-	/**
-	 * Load plugin textdomain.
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain(
-			'optimizations-ace-mc',
-			false,
-			dirname( OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME ) . '/languages/'
-		);
-	}
+    /**
+     * Load plugin textdomain.
+     */
+    public function load_textdomain() {
+        load_plugin_textdomain(
+            'optimizations-ace-mc',
+            false,
+            dirname( OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME ) . '/languages/'
+        );
+    }
 
-	/**
-	 * Initialize optimization functions.
-	 */
-	private function init_optimizations() {
-		// WooCommerce optimizations.
-		$this->init_woocommerce_optimizations();
-		
-		// WP Store Locator optimizations.
-		$this->init_wpsl_optimizations();
-		
-		// WordPress admin optimizations.
-		$this->init_admin_optimizations();
-	}
+    /**
+     * Initialize optimization functions.
+     */
+    private function init_optimizations() {
+        // WooCommerce optimizations.
+        $this->init_woocommerce_optimizations();
+        
+        // WP Store Locator optimizations.
+        $this->init_wpsl_optimizations();
+        
+        // WordPress admin optimizations.
+        $this->init_admin_optimizations();
+    }
 
-	/**
-	 * Initialize WooCommerce-specific optimizations.
-	 */
-	private function init_woocommerce_optimizations() {
-		// Only run if WooCommerce is active.
-		if ( ! $this->is_woocommerce_active() ) {
-			return;
-		}
+    /**
+     * Initialize WooCommerce-specific optimizations.
+     */
+    private function init_woocommerce_optimizations() {
+        // Only run if WooCommerce is active.
+        if ( ! $this->is_woocommerce_active() ) {
+            return;
+        }
 
-		// Show empty categories in WooCommerce.
-		add_filter( 'woocommerce_product_subcategories_hide_empty', '__return_false' );
+        // Show empty categories in WooCommerce.
+        add_filter( 'woocommerce_product_subcategories_hide_empty', '__return_false' );
 
-		// Hide category product count in product archives.
-		add_filter( 'woocommerce_subcategory_count_html', '__return_false' );
+        // Hide category product count in product archives.
+        add_filter( 'woocommerce_subcategory_count_html', '__return_false' );
 
-		// Add order count column to users admin.
-		if ( is_admin() && current_user_can( 'list_users' ) ) {
-			add_filter( 'manage_users_columns', array( $this, 'add_user_order_count_column' ) );
-			add_filter( 'manage_users_custom_column', array( $this, 'display_user_order_count_column' ), 10, 3 );
-			add_filter( 'manage_users_sortable_columns', array( $this, 'make_user_order_count_sortable' ) );
-		}
-	}
+        // Add order count column to users admin.
+        if ( is_admin() && current_user_can( 'list_users' ) ) {
+            add_filter( 'manage_users_columns', array( $this, 'add_user_order_count_column' ) );
+            add_filter( 'manage_users_custom_column', array( $this, 'display_user_order_count_column' ), 10, 3 );
+            add_filter( 'manage_users_sortable_columns', array( $this, 'make_user_order_count_sortable' ) );
+        }
+    }
 
-	/**
-	 * Initialize WP Store Locator optimizations.
-	 */
-	private function init_wpsl_optimizations() {
-		// Only run if WP Store Locator is active.
-		if ( ! $this->is_wpsl_active() ) {
-			return;
-		}
+    /**
+     * Initialize WP Store Locator optimizations.
+     */
+    private function init_wpsl_optimizations() {
+        // Only run if WP Store Locator is active.
+        if ( ! $this->is_wpsl_active() ) {
+            return;
+        }
 
-		// Show store categories in store locator.
-		add_filter( 'wpsl_store_meta', array( $this, 'add_store_categories_to_meta' ), 10, 2 );
-		add_filter( 'wpsl_info_window_template', array( $this, 'customize_info_window_template' ) );
+        // Show store categories in store locator.
+        add_filter( 'wpsl_store_meta', array( $this, 'add_store_categories_to_meta' ), 10, 2 );
+        add_filter( 'wpsl_info_window_template', array( $this, 'customize_info_window_template' ) );
 
-		// Disable REST API for store locator post type.
-		add_filter( 'wpsl_post_type_args', array( $this, 'custom_post_type_args' ) );
-	}
+        // Disable REST API for store locator post type.
+        add_filter( 'wpsl_post_type_args', array( $this, 'custom_post_type_args' ) );
+    }
 
-	/**
-	 * Initialize WordPress admin optimizations.
-	 */
-	private function init_admin_optimizations() {
-		if ( ! is_admin() || ! current_user_can( 'list_users' ) ) {
-			return;
-		}
+    /**
+     * Initialize WordPress admin optimizations.
+     */
+    private function init_admin_optimizations() {
+        if ( ! is_admin() || ! current_user_can( 'list_users' ) ) {
+            return;
+        }
 
-		// Add registration date column to users admin.
-		add_filter( 'manage_users_columns', array( $this, 'add_user_registration_date_column' ) );
-		add_filter( 'manage_users_custom_column', array( $this, 'display_user_registration_date_column' ), 10, 3 );
-		add_filter( 'manage_users_sortable_columns', array( $this, 'make_user_registration_date_sortable' ) );
-	}
+        // Add registration date column to users admin.
+        add_filter( 'manage_users_columns', array( $this, 'add_user_registration_date_column' ) );
+        add_filter( 'manage_users_custom_column', array( $this, 'display_user_registration_date_column' ), 10, 3 );
+        add_filter( 'manage_users_sortable_columns', array( $this, 'make_user_registration_date_sortable' ) );
+    }
 
 	/**
 	 * Check if WooCommerce is active.
@@ -229,32 +229,32 @@ class Optimizations_Ace_Mc {
 		return $store_meta;
 	}
 
-	/**
-	 * Customize info window template to include categories.
-	 *
-	 * @return string
-	 */
-	public function customize_info_window_template() {
-		$info_window_template  = '<div data-store-id="<%= id %>" class="wpsl-info-window">' . "\r\n";
-		$info_window_template .= "\t\t" . '<p>' . "\r\n";
-		$info_window_template .= "\t\t\t" . wpsl_store_header_template() . "\r\n";
-		$info_window_template .= "\t\t\t" . '<span><%= address %></span>' . "\r\n";
-		$info_window_template .= "\t\t\t" . '<% if ( address2 ) { %>' . "\r\n";
-		$info_window_template .= "\t\t\t" . '<span><%= address2 %></span>' . "\r\n";
-		$info_window_template .= "\t\t\t" . '<% } %>' . "\r\n";
-		$info_window_template .= "\t\t\t" . '<span>' . wpsl_address_format_placeholders() . '</span>' . "\r\n";
-		$info_window_template .= "\t\t" . '</p>' . "\r\n";
+    /**
+     * Customize info window template to include categories.
+     *
+     * @return string
+     */
+    public function customize_info_window_template() {
+        $info_window_template  = '<div data-store-id="<%= id %>" class="wpsl-info-window">' . "\r\n";
+        $info_window_template .= "        " . '<p>' . "\r\n";
+        $info_window_template .= "            " . wpsl_store_header_template() . "\r\n";
+        $info_window_template .= "            " . '<span><%= address %></span>' . "\r\n";
+        $info_window_template .= "            " . '<% if ( address2 ) { %>' . "\r\n";
+        $info_window_template .= "            " . '<span><%= address2 %></span>' . "\r\n";
+        $info_window_template .= "            " . '<% } %>' . "\r\n";
+        $info_window_template .= "            " . '<span>' . wpsl_address_format_placeholders() . '</span>' . "\r\n";
+        $info_window_template .= "        " . '</p>' . "\r\n";
 
-		// Include the category names.
-		$info_window_template .= "\t\t" . '<% if ( terms ) { %>' . "\r\n";
-		$info_window_template .= "\t\t" . '<p>' . esc_html__( 'Certifications:', 'optimizations-ace-mc' ) . ' <%= terms %></p>' . "\r\n";
-		$info_window_template .= "\t\t" . '<% } %>' . "\r\n";
+        // Include the category names.
+        $info_window_template .= "        " . '<% if ( terms ) { %>' . "\r\n";
+        $info_window_template .= "        " . '<p>' . esc_html__( 'Certifications:', 'optimizations-ace-mc' ) . ' <%= terms %></p>' . "\r\n";
+        $info_window_template .= "        " . '<% } %>' . "\r\n";
 
-		$info_window_template .= "\t\t" . '<%= createInfoWindowActions( id ) %>' . "\r\n";
-		$info_window_template .= "\t" . '</div>' . "\r\n";
+        $info_window_template .= "        " . '<%= createInfoWindowActions( id ) %>' . "\r\n";
+        $info_window_template .= "    " . '</div>' . "\r\n";
 
-		return $info_window_template;
-	}
+        return $info_window_template;
+    }
 
 	/**
 	 * Disable REST API for WP Store Locator post type.
