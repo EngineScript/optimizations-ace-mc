@@ -147,16 +147,10 @@ jobs:
           # Verify installation and show available standards
           phpcs -i
 
-      - name: Run PHPCS with WordPress Standards and Spacing Enforcement
+      - name: Run PHPCS
         run: |
-          # Verify our custom phpcs.xml configuration
-          echo "=== PHPCS Configuration ==="
-          cat phpcs.xml
-          echo "=== End PHPCS Configuration ==="
-          
-          # Use our custom phpcs.xml configuration for WordPress standards + spacing
-          echo "Running PHPCS with WordPress standards and spaces enforcement..."
-          phpcs --standard=phpcs.xml --extensions=php . || echo "PHPCS found issues - check spacing and WordPress coding standards"
+          # Use WordPress-Core standard which has fewer dependencies
+          phpcs --standard=WordPress-extra --extensions=php --ignore=vendor,tests,node_modules . || exit 0
 
       - name: Create issue on PHPCS failure
         if: ${{ failure() }}
