@@ -28,6 +28,7 @@
 
     <!-- ENFORCE SPACES INSTEAD OF TABS - NO TABS ALLOWED -->
     <rule ref="Generic.WhiteSpace.DisallowTabIndent">
+    </rule>
     <rule ref="Generic.WhiteSpace.ScopeIndent">
         <properties>
             <!-- Use 4 spaces for indentation (WordPress standard) -->
