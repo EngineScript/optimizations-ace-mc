@@ -38,12 +38,6 @@
             <property name="tabIndent" value="false"/>
         </properties>
     </rule>
-    
-    <!-- Additional tab detection rules -->
-    <rule ref="Squiz.WhiteSpace.TabIndent">
-        <severity>10</severity>
-        <type>error</type>
-    </rule>
 
     <!-- Additional WordPress-specific spacing rules -->
     <rule ref="WordPress.WhiteSpace.ControlStructureSpacing"/>
