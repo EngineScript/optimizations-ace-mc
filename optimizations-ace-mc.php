@@ -6,7 +6,7 @@
  * Version: 1.0.1
  * Author: EngineScript
  * Author URI: https://github.com/EngineScript
- * License: GPL v2 or later
+ * License: GPL v3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: optimizations-ace-mc
  * Domain Path: /languages
