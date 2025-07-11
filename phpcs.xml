@@ -16,9 +16,6 @@
 
     <!-- Use WordPress coding standards -->
     <rule ref="WordPress">
-        <!-- Exclude VIP-specific rules that may not apply to regular plugins -->
-        <exclude name="WordPress.VIP"/>
-        
         <!-- Allow short array syntax [] instead of array() -->
         <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
         
