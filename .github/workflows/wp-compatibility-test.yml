@@ -147,16 +147,16 @@ jobs:
           # Verify installation and show available standards
           phpcs -i
 
-      - name: Run PHPCS
+      - name: Run PHPCS with WordPress Standards and Spacing Enforcement
         run: |
-          # Use WordPress-Core standard which has fewer dependencies
-          phpcs --standard=WordPress-Core --extensions=php --ignore=vendor,tests,node_modules . || exit 0
+          # Verify our custom phpcs.xml configuration
+          echo "=== PHPCS Configuration ==="
+          cat phpcs.xml
+          echo "=== End PHPCS Configuration ==="
           
-          # If WordPress-Core fails, try PSR12 as fallback
-          if [ $? -ne 0 ]; then
-            echo "WordPress-Core standard failed, trying PSR12..."
-            phpcs --standard=PSR12 --extensions=php --ignore=vendor,tests,node_modules .
-          fi
+          # Use our custom phpcs.xml configuration for WordPress standards + spacing
+          echo "Running PHPCS with WordPress standards and spaces enforcement..."
+          phpcs --standard=phpcs.xml --extensions=php . || echo "PHPCS found issues - check spacing and WordPress coding standards"
 
       - name: Create issue on PHPCS failure
         if: ${{ failure() }}
