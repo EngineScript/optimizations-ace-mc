@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Optimizations ACE MC 1.0.1\n"
-"Report-Msgid-Bugs-To: https://github.com/EngineScript/Optimizations-ACE-MC/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/EngineScript/optimizations-ace-mc/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgid "Optimizations ACE MC"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://github.com/EngineScript/Optimizations-ACE-MC"
+msgid "https://github.com/EngineScript/optimizations-ace-mc"
 msgstr ""
 
 #. Description of the plugin/theme
