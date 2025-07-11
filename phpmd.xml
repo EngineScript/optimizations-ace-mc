@@ -43,9 +43,34 @@
         <exclude name="ExitExpression"/>
     </rule>
     
-    <!-- SKIP ALL NAMING RULES - WordPress uses snake_case which conflicts with PHPMD defaults -->
-    <!-- Naming rules are disabled for WordPress compatibility -->
-    <!-- WordPress coding standards use snake_case for methods, variables, and allow underscores in class names -->
+    <!-- COMPLETELY DISABLE ALL NAMING RULES FOR WORDPRESS COMPATIBILITY -->
+    <!-- WordPress uses snake_case naming which conflicts with PHPMD's camelCase requirements -->
+    <!-- The following rules are intentionally NOT included: -->
+    <!-- - CamelCaseClassName (WordPress allows Class_Name_With_Underscores) -->
+    <!-- - CamelCaseMethodName (WordPress uses method_name_with_underscores) -->
+    <!-- - CamelCaseVariableName (WordPress uses $variable_name_with_underscores) -->
+    <!-- - CamelCaseParameterName (WordPress uses $parameter_name_with_underscores) -->
+    <!-- - CamelCasePropertyName (WordPress uses $property_name_with_underscores) -->
+    
+    <!-- Import only safe naming rules that don't conflict with WordPress -->
+    <rule ref="rulesets/naming.xml/ShortVariable">
+        <properties>
+            <property name="minimum" value="2"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/naming.xml/LongVariable">
+        <properties>
+            <property name="maximum" value="30"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/naming.xml/ShortMethodName">
+        <properties>
+            <property name="minimum" value="3"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass"/>
+    <rule ref="rulesets/naming.xml/ConstantNamingConventions"/>
+    <rule ref="rulesets/naming.xml/BooleanGetMethodName"/>
     
     <!-- Unused Code Rules -->
     <rule ref="rulesets/unusedcode.xml"/>
