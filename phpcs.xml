@@ -37,6 +37,16 @@
         </properties>
     </rule>
 
+    <!-- Disallow Rule Flagging Space Indents -->
+    <rule ref="Generic.WhiteSpace.DisallowSpaceIndent">
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
+    </rule>
+
+        <!-- Disallow Rule Flagging Space Indents -->
+    <rule ref="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed">
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed" />
+    </rule>
+
     <!-- Disallow inline tabs -->
     <rule ref="Universal.WhiteSpace.DisallowInlineTabs">
     </rule>
