@@ -3,7 +3,7 @@
  * Plugin Name: Optimizations ACE MC
  * Plugin URI: https://github.com/EngineScript/optimizations-ace-mc
  * Description: A lightweight WordPress optimization plugin with pre-configured performance enhancements for WooCommerce, WP Store Locator, and WordPress admin.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: EngineScript
  * Author URI: https://github.com/EngineScript
  * License: GPL v3 or later
@@ -23,7 +23,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define plugin constants.
-define( 'OPTIMIZATIONS_ACE_MC_VERSION', '1.0.1' );
+define( 'OPTIMIZATIONS_ACE_MC_VERSION', '1.0.2' );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_FILE', __FILE__ );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -209,7 +209,7 @@ class Optimizations_Ace_Mc {
      * @return array
      */
     public function add_store_categories_to_meta( $store_meta, $store_id ) {
-        $terms = get_the_terms( absint( $store_id ), 'wpsl_store_category' );
+        $terms              = get_the_terms( absint( $store_id ), 'wpsl_store_category' );
         $store_meta['terms'] = '';
 
         if ( $terms && ! is_wp_error( $terms ) ) {
@@ -236,22 +236,22 @@ class Optimizations_Ace_Mc {
      */
     public function customize_info_window_template() {
         $info_window_template  = '<div data-store-id="<%= id %>" class="wpsl-info-window">' . "\r\n";
-        $info_window_template .= "        " . '<p>' . "\r\n";
-        $info_window_template .= "            " . wpsl_store_header_template() . "\r\n";
-        $info_window_template .= "            " . '<span><%= address %></span>' . "\r\n";
-        $info_window_template .= "            " . '<% if ( address2 ) { %>' . "\r\n";
-        $info_window_template .= "            " . '<span><%= address2 %></span>' . "\r\n";
-        $info_window_template .= "            " . '<% } %>' . "\r\n";
-        $info_window_template .= "            " . '<span>' . wpsl_address_format_placeholders() . '</span>' . "\r\n";
-        $info_window_template .= "        " . '</p>' . "\r\n";
+        $info_window_template .= '        ' . '<p>' . "\r\n";
+        $info_window_template .= '            ' . wpsl_store_header_template() . "\r\n";
+        $info_window_template .= '            ' . '<span><%= address %></span>' . "\r\n";
+        $info_window_template .= '            ' . '<% if ( address2 ) { %>' . "\r\n";
+        $info_window_template .= '            ' . '<span><%= address2 %></span>' . "\r\n";
+        $info_window_template .= '            ' . '<% } %>' . "\r\n";
+        $info_window_template .= '            ' . '<span>' . wpsl_address_format_placeholders() . '</span>' . "\r\n";
+        $info_window_template .= '        ' . '</p>' . "\r\n";
 
         // Include the category names.
-        $info_window_template .= "        " . '<% if ( terms ) { %>' . "\r\n";
-        $info_window_template .= "        " . '<p>' . esc_html__( 'Certifications:', 'optimizations-ace-mc' ) . ' <%= terms %></p>' . "\r\n";
-        $info_window_template .= "        " . '<% } %>' . "\r\n";
+        $info_window_template .= '        ' . '<% if ( terms ) { %>' . "\r\n";
+        $info_window_template .= '        ' . '<p>' . esc_html__( 'Certifications:', 'optimizations-ace-mc' ) . ' <%= terms %></p>' . "\r\n";
+        $info_window_template .= '        ' . '<% } %>' . "\r\n";
 
-        $info_window_template .= "        " . '<%= createInfoWindowActions( id ) %>' . "\r\n";
-        $info_window_template .= "    " . '</div>' . "\r\n";
+        $info_window_template .= '        ' . '<%= createInfoWindowActions( id ) %>' . "\r\n";
+        $info_window_template .= '    ' . '</div>' . "\r\n";
 
         return $info_window_template;
     }
