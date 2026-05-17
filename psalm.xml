@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="3"
+    resolveFromConfigFile="true"
+    phpVersion="8.2"
+    allFunctionsGlobal="true"
+    allConstantsGlobal="true"
+    findUnusedCode="false"
+>
+    <projectFiles>
+        <file name="optimizations-ace-mc.php" />
+        <directory name="includes" />
+    </projectFiles>
+
+    <stubs>
+        <file name="vendor/php-stubs/wordpress-stubs/wordpress-stubs.php" />
+        <file name="stubs/psalm-wordpress-constants.php" />
+        <file name="stubs/woocommerce.php" />
+    </stubs>
+
+</psalm>

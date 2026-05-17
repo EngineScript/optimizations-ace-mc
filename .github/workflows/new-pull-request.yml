@@ -1,15 +1,16 @@
 # This workflow automatically posts a guidance comment on new pull requests.
-# It welcomes contributors and provides a brief message to acknowledge their 
-# contribution to the Optimizations ACE MC plugin.
+# It welcomes contributors and provides a brief message to acknowledge their
+# contribution to Optimizations ACE MC.
 # The workflow is triggered whenever a new pull request is opened.
 
 name: New Pull Request Guidance
 
 on:
+  # pull_request_target is used only so the workflow can post this static
+  # guidance comment on forked PRs. Do not add checkout, build, or script steps
+  # here because this event has access to repository-scoped credentials.
   pull_request_target:
     types: [opened]
-
-permissions: read-all
 
 jobs:
   guide:
@@ -19,22 +20,22 @@ jobs:
       pull-requests: write
     steps:
       - name: Post guidance comment on new PR
-        uses: peter-evans/create-or-update-comment@v5
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Thanks for contributing to Optimizations ACE MC! 🎉
+            Thanks for contributing to Optimizations ACE MC!
 
             **Before we review:**
-            - [ ] Have you tested your changes with WordPress 6.6+?
-            - [ ] Are your changes compatible with PHP 8.1+?
+            - [ ] Have you tested your changes with WordPress 6.8+?
+            - [ ] Are your changes compatible with PHP 8.2+?
             - [ ] Have you followed WordPress coding standards?
             - [ ] Did you update the CHANGELOG.md if needed?
-            
-            **Security Reminder:**
-            This plugin can handle sensitive site configuration information, so please ensure:
-            - All user inputs are properly sanitized
-            - All outputs are properly escaped
+
+            **Security Reminder**
+            This plugin adjusts WooCommerce, WP Store Locator, and WordPress admin behavior, so please ensure:
+            - All user input is properly sanitized
+            - All output is properly escaped
             - No security vulnerabilities are introduced
-            
-            We'll review your PR soon! 🚀
+
+            We'll review your PR soon.

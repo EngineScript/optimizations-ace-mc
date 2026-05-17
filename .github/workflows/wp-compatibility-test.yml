@@ -1,192 +1,172 @@
 # This workflow performs comprehensive WordPress plugin compatibility and quality checks.
-# It runs multiple validation processes including:
+# It runs multiple validation processes, including:
 # - WordPress Plugin Check for WordPress.org compatibility
-# - PHPUnit tests across PHP versions (8.1, 8.2, 8.3, 8.4, 8.5)
-# - PHP compatibility testing across multiple PHP versions (8.1, 8.2, 8.3, 8.4, 8.5)
-# - WordPress compatibility testing across multiple WP versions (6.6, latest, nightly)
+# - PHPUnit tests across supported tooling PHP versions (8.2, 8.3, 8.4, 8.5)
+# - PHP compatibility testing for the plugin's PHP 8.2+ runtime target
+# - WordPress compatibility testing across multiple WP versions (6.8, latest, nightly)
 # - PHPStan static analysis for WordPress-specific code quality
 # - WordPress security vulnerability scanning using pattern analysis
 # - PHPCS code standards validation for WordPress coding standards
-# - Code quality analysis and automated issue creation for failures
+# - Code quality analysis
 # The workflow ensures the plugin meets WordPress.org standards and maintains compatibility.
 
 name: WordPress Compatibility & Plugin Check
 
 on:
-  # Run on pushes to main branch and on all pull requests
+  # Run on pushes to the main branch and on all pull requests.
   push:
     branches: [ main ]
   pull_request:
-  # Allow manually triggering the workflow
+  # Allow manual workflow runs.
   workflow_dispatch:
 
-# Cancels all previous workflow runs for the same branch that have not yet completed
+# Cancel previous incomplete workflow runs for the same branch.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
-  issues: write
 
 jobs:
   plugin-check:
     name: WP Plugin Check (PHP 8.3)
     runs-on: ubuntu-latest
-    
+
     strategy:
       fail-fast: false
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
-          # Always fetch the latest commit, disable any caching
+          # Always fetch the latest commit and disable checkout caching.
           fetch-depth: 0
           clean: true
-      
+
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2
-      
+
       - name: Clear any existing composer cache
         run: |
           composer clear-cache || true
           rm -rf vendor/ composer.lock || true
-      
+
       - name: Install Composer dependencies (no cache)
         run: |
           composer install --prefer-dist --no-progress --no-cache
 
       - name: Clean up potential artifact directories
         run: |
-          echo "🧹 Removing any artifact directories to prevent conflicts..."
+          echo "Removing artifact directories to prevent conflicts..."
           rm -rf .reports 2>/dev/null || true
           rm -rf build 2>/dev/null || true
-          echo "✅ Cleanup complete"
+          echo "Cleanup complete."
+
+      - name: Prepare Plugin Check build directory
+        run: |
+          rm -rf plugin-check-build 2>/dev/null || true
+
+          PLUGIN_SLUG="optimizations-ace-mc"
+          BUILD_DIR="plugin-check-build/${PLUGIN_SLUG}"
+
+          mkdir -p "$BUILD_DIR"
+
+          cp optimizations-ace-mc.php "$BUILD_DIR/"
+          cp -r includes "$BUILD_DIR/"
+          if [ -d assets ]; then
+            cp -r assets "$BUILD_DIR/"
+          fi
+          cp readme.txt "$BUILD_DIR/"
+          cp README.md "$BUILD_DIR/"
+          cp CHANGELOG.md "$BUILD_DIR/"
+          cp LICENSE "$BUILD_DIR/"
+          if [ -d languages ]; then
+            cp -r languages "$BUILD_DIR/"
+          fi
 
       - name: WordPress Plugin Check
-        uses: WordPress/plugin-check-action@v1.1.5
+        uses: WordPress/plugin-check-action@18573eb38f13543484a1f095672dae3849a4fbb0 # v1.1.6
         with:
-          # Build directory - using repository root
-          build-dir: './'
-          
-          # Configure which categories to check
+          # Production-style plugin directory. Excludes repo-only files such as
+          # .github, .vscode, GEMINI.md, and other development artifacts.
+          build-dir: './plugin-check-build/optimizations-ace-mc'
+
+          # Configure the categories to check.
           categories: |
             accessibility
             general
             performance
             plugin_repo
             security
-          
-          # Whether to include experimental checks
+
+          # Whether to include experimental checks.
           include-experimental: false
-          
-          # Don't ignore warnings or errors
+
+          # Do not ignore warnings or errors.
           ignore-warnings: false
           ignore-errors: false
-          
-          # WordPress version to use
+
+          # WordPress version to use.
           wp-version: 'latest'
-      
+
       - name: Handle plugin check completion
         if: ${{ always() }}
         run: |
-          echo "✅ Plugin Check completed for PHP 8.3"
-      
-      - name: Create issue on plugin check failure
-        if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        with:
-          filename: .github/ISSUE_TEMPLATE/plugin-check-failure.md
-          update_existing: false
-          
-      - name: Mark job as failed after issue creation
-        if: ${{ failure() }}
-        run: |
-          echo "::error::WordPress Plugin Check failed. Created issue for tracking."
-          exit 1
+          echo "Plugin Check completed for PHP 8.3."
 
   phpcs:
     name: PHPCS (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
-          tools: composer:v2, phpcs
+          tools: composer:v2
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v4
+        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
         with:
           dependency-versions: highest
           composer-options: "--prefer-dist --no-progress"
 
-      - name: Install WordPress Coding Standards
+      - name: Verify PHPCS standards
         run: |
-          # Install PHPCS and WordPress Coding Standards using the dealerdirect installer
-          composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
-          composer global require --dev squizlabs/php_codesniffer:"^3.7"
-          composer global require --dev wp-coding-standards/wpcs:"^3.2"
-          composer global require --dev phpcompatibility/php-compatibility:"^9.3"
-          composer global require --dev phpcompatibility/phpcompatibility-wp:"^2.1" 
-          composer global require --dev automattic/vipwpcs:"^3.0"
-          composer global require --dev dealerdirect/phpcodesniffer-composer-installer:"^1.1"
-          
-          # Add composer bin to PATH
-          echo "$HOME/.composer/vendor/bin" >> $GITHUB_PATH
-          
-          # Verify installation and show available standards
-          phpcs -i
+          # Verify the project-local PHPCS installation and registered standards.
+          vendor/bin/phpcs -i
 
       - name: Run PHPCS
         run: |
-          # Use WordPress-Core standard which has fewer dependencies
-          phpcs --standard=WordPress-extra --extensions=php --ignore=vendor,tests,node_modules,.github,.vscode . || exit 0
-
-      - name: Create issue on PHPCS failure
-        if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: '8.3'
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        with:
-          filename: .github/ISSUE_TEMPLATE/phpcs-failure.md
-          update_existing: false
+          vendor/bin/phpcs --standard=phpcs.xml
 
   vip-phpcs:
     name: WP VIP CS (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
-          tools: composer:v2, phpcs
+          tools: composer:v2
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v4
+        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
         with:
           dependency-versions: highest
           composer-options: "--prefer-dist --no-progress"
@@ -195,18 +175,18 @@ jobs:
         run: |
           # Install PHPCS and WordPress VIP Coding Standards
           composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
-          composer global require --dev squizlabs/php_codesniffer:"^3.7"
-          composer global require --dev wp-coding-standards/wpcs:"^3.0"
-          composer global require --dev automattic/vipwpcs:"^3.0"
-          composer global require --dev dealerdirect/phpcodesniffer-composer-installer:"^1.1.1"
-          
-          # Add composer bin to PATH
-          echo "$HOME/.composer/vendor/bin" >> $GITHUB_PATH
-          
-          # Verify installation and show available standards
+          composer global require --dev squizlabs/php_codesniffer:"^3.13.5"
+          composer global require --dev wp-coding-standards/wpcs:"^3.3"
+          composer global require --dev automattic/vipwpcs:"^3.0.1"
+          composer global require --dev dealerdirect/phpcodesniffer-composer-installer:"^1.2"
+
+          # Add the Composer bin directory to PATH.
+          echo "$HOME/.composer/vendor/bin" >> "$GITHUB_PATH"
+
+          # Verify the installation and show available standards.
           phpcs -i
-          
-          # Verify VIP standards are available
+
+          # Verify that VIP standards are available.
           phpcs -i | grep -i vip || echo "VIP standards not found, checking installation..."
 
       - name: Create VIP-specific PHPCS configuration
@@ -214,7 +194,7 @@ jobs:
           cat > phpcs-vip.xml << 'EOF'
           <?xml version="1.0"?>
           <ruleset name="WordPress VIP Go Coding Standards">
-              <description>WordPress VIP Go coding standards for enterprise-level WordPress development</description>
+              <description>WordPress VIP Go coding standards for enterprise WordPress development</description>
 
               <!-- Files to check -->
               <file>.</file>
@@ -235,10 +215,10 @@ jobs:
               <rule ref="WordPress-VIP-Go">
                   <!-- Allow short array syntax [] instead of array() -->
                   <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
-                  
-                  <!-- Allow longer lines for readability in some cases -->
+
+                  <!-- Allow longer lines when needed for readability -->
                   <exclude name="Generic.Files.LineLength.TooLong"/>
-                  
+
                   <!-- Exclude JS-related sniffs to avoid deprecation warnings -->
                   <exclude name="WordPressVIPMinimum.JS"/>
               </rule>
@@ -266,10 +246,10 @@ jobs:
 
               <!-- Show progress -->
               <arg value="p"/>
-              
+
               <!-- Show sniff codes in all reports -->
               <arg value="s"/>
-              
+
               <!-- Use colors in output -->
               <arg name="colors"/>
 
@@ -280,50 +260,38 @@ jobs:
 
       - name: Run WordPress VIP PHPCS
         run: |
-          echo "🚀 Running WordPress VIP Go Coding Standards scan..."
-          echo "📋 This scan focuses on VIP-specific requirements including:"
-          echo "   • File system operation restrictions"
-          echo "   • Performance and caching best practices"  
-          echo "   • Security vulnerabilities specific to VIP platform"
-          echo "   • User experience guidelines for enterprise WordPress"
-          echo "   • Uncached function usage patterns"
+          echo "Running WordPress VIP Go coding standards scan..."
+          echo "This scan focuses on VIP-specific requirements, including:"
+          echo "   - File system operation restrictions"
+          echo "   - Performance and caching best practices"
+          echo "   - Security vulnerabilities specific to the VIP platform"
+          echo "   - User experience guidelines for enterprise WordPress"
+          echo "   - Uncached function usage patterns"
           echo ""
-          echo "📦 Using standards: WordPress-VIP-Go, WordPressVIPMinimum"
-          echo "🎯 Scanning PHP files only (excluding JS/CSS to avoid deprecation warnings)"
+          echo "Using standards: WordPress-VIP-Go, WordPressVIPMinimum"
+          echo "Scanning PHP files only (excluding JS/CSS to avoid deprecation warnings)"
           echo ""
-          
-          # Run VIP-specific PHPCS scan using our custom configuration
-          # Only scan PHP files to avoid JS/CSS deprecation warnings
+
+          # Run the VIP-specific PHPCS scan using our custom configuration.
+          # Only scan PHP files to avoid JS/CSS deprecation warnings.
           phpcs --standard=phpcs-vip.xml --extensions=php . || {
             echo ""
-            echo "⚠️ WordPress VIP coding standards issues found."
-            echo "💡 Note: These are VIP-specific recommendations for enterprise WordPress platforms."
-            echo "🔧 Many of these may not apply to standard WordPress installations."
-            echo "📖 For more info: https://docs.wpvip.com/technical-references/code-quality-and-best-practices/"
+            echo "WordPress VIP coding standards issues found."
+            echo "Note: These are VIP-specific recommendations for enterprise WordPress platforms."
+            echo "Many of these may not apply to standard WordPress installations."
+            echo "For more information: https://docs.wpvip.com/technical-references/code-quality-and-best-practices/"
             echo ""
-            exit 0
+            exit 1
           }
-          
-          echo "✅ WordPress VIP coding standards check completed successfully!"
 
-      - name: Create issue on VIP PHPCS failure
-        if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: '8.3'
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        with:
-          filename: .github/ISSUE_TEMPLATE/vip-phpcs-failure.md
-          update_existing: false
+          echo "WordPress VIP coding standards check completed successfully."
 
   phpmd:
     name: PHPMD (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Always fetch the latest commit, disable any caching
           fetch-depth: 0
@@ -338,12 +306,12 @@ jobs:
           echo "=== End Git Information ==="
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
-          tools: composer:v2, phpmd
+          tools: composer:v2
 
       - name: Clear any existing composer cache
         run: |
@@ -353,7 +321,7 @@ jobs:
       - name: Install Composer dependencies (no cache)
         run: |
           composer install --prefer-dist --no-progress --no-cache
-          
+
       - name: Verify phpmd.xml content
         run: |
           echo "=== Current phpmd.xml content ==="
@@ -364,30 +332,17 @@ jobs:
         run: |
           # Use WordPress-specific PHPMD configuration (WordPress snake_case compatible)
           echo "Using WordPress-specific PHPMD configuration (WordPress snake_case compatible)..."
-          # Run PHPMD but don't fail the build on naming convention issues
-          phpmd optimizations-ace-mc.php text phpmd.xml || echo "PHPMD completed with warnings (WordPress naming conventions may differ from PHPMD defaults)"
-
-      - name: Create issue on PHPMD failure
-        if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: '8.3'
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        with:
-          filename: .github/ISSUE_TEMPLATE/phpmd-failure.md
-          update_existing: false
+          vendor/bin/phpmd . text phpmd.xml --exclude vendor,tests,stubs,assets,.private
 
   psalm-analysis:
     name: Psalm Static Analysis (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -395,64 +350,27 @@ jobs:
           tools: composer:v2
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v4
+        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
         with:
           dependency-versions: highest
           composer-options: "--prefer-dist --no-progress"
 
-      - name: Install Psalm
-        run: composer require --dev vimeo/psalm
-
-      - name: Create Psalm config
-        run: |
-          cat > psalm.xml << 'EOF'
-          <?xml version="1.0"?>
-          <psalm
-              errorLevel="3"
-              resolveFromConfigFile="true"
-          >
-              <projectFiles>
-                  <directory name="." />
-                  <ignoreFiles>
-                      <directory name="vendor" />
-                      <directory name="tests" />
-                      <directory name="node_modules" />
-                  </ignoreFiles>
-              </projectFiles>
-          </psalm>
-          EOF
+      - name: Verify Psalm installation
+        run: vendor/bin/psalm --version
 
       - name: Run Psalm
         run: |
-          # Initialize Psalm configuration if needed
-          if [ ! -f psalm.xml ]; then
-            ./vendor/bin/psalm --init
-          fi
-          
-          # Run Psalm with error handling
-          ./vendor/bin/psalm --show-info=true || true
-
-      - name: Create issue on Psalm failure
-        if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: '8.3'
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        with:
-          filename: .github/ISSUE_TEMPLATE/psalm-failure.md
-          update_existing: false
+          vendor/bin/psalm --config=psalm.xml --show-info=true
 
   security-check:
     name: Security Scan (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -460,89 +378,77 @@ jobs:
           tools: composer:v2
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v4
+        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
         with:
           dependency-versions: highest
           composer-options: "--prefer-dist --no-progress"
 
       - name: Security Check for known vulnerabilities in dependencies
-        uses: symfonycorp/security-checker-action@v5
+        uses: symfonycorp/security-checker-action@258311ef7ac571f1310780ef3d79fc5abef642b5 # v5
 
       - name: WordPress Security Scan
         run: |
           echo "Performing WordPress plugin security analysis..."
-          
-          # Basic security pattern checks for common WordPress vulnerabilities
-          echo "🔍 Checking for common security issues..."
-          
-          # Check for potential SQL injection patterns
-          if grep -r "mysql_query\|mysqli_query" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . 2>/dev/null; then
-            echo "⚠️ Warning: Direct database queries found - ensure proper sanitization"
-          fi
-          
-          # Check for potential XSS vulnerabilities (missing escaping)
-          if grep -r "echo \$_\|print \$_" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . 2>/dev/null; then
-            echo "⚠️ Warning: Potential XSS vulnerability - ensure output is escaped"
-          fi
-          
-          # Check for file inclusion vulnerabilities
-          if grep -r "include.*\$_\|require.*\$_" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . 2>/dev/null; then
-            echo "⚠️ Warning: Potential file inclusion vulnerability found"
-          fi
-          
-          # Check for eval() usage (security risk)
-          if grep -r "eval(" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . 2>/dev/null; then
-            echo "⚠️ Warning: eval() function usage detected - security risk"
-          fi
-          
-          # Check for proper nonce usage
-          if grep -r "wp_nonce_field\|wp_verify_nonce" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . >/dev/null 2>&1; then
-            echo "✅ WordPress nonce usage detected - good security practice"
-          else
-            echo "ℹ️ Info: Consider adding WordPress nonces for form security"
-          fi
-          
-          # Check for proper sanitization functions
-          if grep -r "sanitize_\|esc_" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . >/dev/null 2>&1; then
-            echo "✅ WordPress sanitization functions detected - good security practice"
-          else
-            echo "⚠️ Warning: Limited use of WordPress sanitization functions"
-          fi
-          
-          # Check for capability checks
-          if grep -r "current_user_can\|user_can" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . >/dev/null 2>&1; then
-            echo "✅ WordPress capability checks detected - good security practice"
-          else
-            echo "ℹ️ Info: Consider adding user capability checks where appropriate"
-          fi
-          
-          echo "🛡️ WordPress security scan completed"
 
-      - name: Create issue on security vulnerability
-        if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: '8.3'
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        with:
-          filename: .github/ISSUE_TEMPLATE/security-failure.md
-          update_existing: false
+          # Basic security pattern checks for common WordPress vulnerabilities.
+          echo "Checking for common security issues..."
+
+          # Check for potential SQL injection patterns.
+          if grep -r "mysql_query\|mysqli_query" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . 2>/dev/null; then
+            echo "Warning: Direct database queries found. Ensure proper sanitization."
+          fi
+
+          # Check for potential XSS vulnerabilities caused by missing escaping.
+          if grep -r "echo \$_\|print \$_" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . 2>/dev/null; then
+            echo "Warning: Potential XSS vulnerability found. Ensure output is escaped."
+          fi
+
+          # Check for file inclusion vulnerabilities.
+          if grep -r "include.*\$_\|require.*\$_" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . 2>/dev/null; then
+            echo "Warning: Potential file inclusion vulnerability found."
+          fi
+
+          # Check for eval() usage, which is a security risk.
+          if grep -r "eval(" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . 2>/dev/null; then
+            echo "Warning: eval() function usage detected. This is a security risk."
+          fi
+
+          # Check for proper nonce usage.
+          if grep -r "wp_nonce_field\|wp_verify_nonce\|settings_fields" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . >/dev/null 2>&1; then
+            echo "WordPress nonce usage detected."
+          else
+            echo "Info: Consider adding WordPress nonces for form security."
+          fi
+
+          # Check for proper sanitization functions.
+          if grep -r "sanitize_\|esc_" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . >/dev/null 2>&1; then
+            echo "WordPress sanitization functions detected."
+          else
+            echo "Warning: Limited use of WordPress sanitization functions."
+          fi
+
+          # Check for capability checks.
+          if grep -r "current_user_can\|user_can" --include="*.php" --exclude-dir=.github --exclude-dir=.vscode . >/dev/null 2>&1; then
+            echo "WordPress capability checks detected."
+          else
+            echo "Info: Consider adding user capability checks where appropriate."
+          fi
+
+          echo "WordPress security scan completed."
 
   phpstan-wordpress:
     name: PHPStan for WP (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Always fetch the latest commit, disable any caching
           fetch-depth: 0
           clean: true
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -557,7 +463,7 @@ jobs:
       - name: Install Composer dependencies (no cache)
         run: |
           composer install --prefer-dist --no-progress --no-cache
-          
+
       - name: Verify phpstan.neon content
         run: |
           echo "=== Current phpstan.neon content ==="
@@ -567,28 +473,21 @@ jobs:
       - name: PHPStan for WordPress Analysis
         run: |
           echo "Running PHPStan analysis with WordPress stubs..."
-          vendor/bin/phpstan analyse --no-progress --error-format=table
-          echo "✅ PHPStan analysis completed successfully!"
-
-      - name: Create issue on PHPStan failure
-        if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: '8.3'
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        with:
-          filename: .github/ISSUE_TEMPLATE/phpstan-failure.md
-          update_existing: false
+          vendor/bin/phpstan analyze --no-progress --error-format=table
+          echo "PHPStan analysis completed successfully."
 
   wp-version-test:
-    name: Test WordPress ${{ matrix.wp-version }} with PHP ${{ matrix.php-version }}
+    name: Test WordPress ${{ matrix.wp-version }} with PHP ${{ matrix.php-version }} (${{ matrix.dependency-versions }} deps)
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
-        wp-version: ['6.6', 'latest', 'nightly']
+        php-version: ['8.2', '8.3', '8.4', '8.5']
+        wp-version: ['6.8', 'latest', 'nightly']
+        dependency-versions: ['highest']
+        include:
+          - php-version: '8.2'
+            wp-version: 'latest'
+            dependency-versions: 'lowest'
       fail-fast: false
 
     services:
@@ -603,27 +502,64 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup PHP ${{ matrix.php-version }}
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
           php-version: ${{ matrix.php-version }}
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2
 
+      - name: Use isolated Composer auth
+        run: |
+          # Avoid inheriting a masked or malformed GitHub OAuth token from Composer auth.
+          composer_home="${RUNNER_TEMP}/composer-home"
+          composer_cache="${RUNNER_TEMP}/composer-cache"
+
+          mkdir -p "$composer_home" "$composer_cache"
+
+          {
+            echo "COMPOSER_HOME=$composer_home"
+            echo "COMPOSER_CACHE_DIR=$composer_cache"
+            echo 'COMPOSER_AUTH={"github-oauth":{"github.com":"${{ github.token }}"}}'
+          } >> "$GITHUB_ENV"
+
+      - name: PHP syntax lint
+        run: |
+          find . \
+            -path './vendor' -prune -o \
+            -path './tests' -prune -o \
+            -path './build' -prune -o \
+            -path './plugin-check-build' -prune -o \
+            -name '*.php' -print0 | xargs -0 -n1 php -l
+
       - name: Install Subversion
         run: sudo apt-get update && sudo apt-get install -y subversion
 
-      - name: Remove the PHP platform requirement
-        run: composer config --unset platform.php
-
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v4
+        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
         with:
-          dependency-versions: highest
+          dependency-versions: ${{ matrix.dependency-versions }}
           composer-options: "--prefer-dist --no-progress"
+
+      - name: Pin PHPUnit for WordPress test suite
+        run: |
+          # The WordPress test library still calls PHPUnit APIs removed in PHPUnit 10+.
+          # Keep this generated integration-test job on PHPUnit 9.6 while the rest
+          # of the project can continue using newer Composer-resolved QA tooling.
+          if [ "${{ matrix.dependency-versions }}" = "lowest" ]; then
+            composer require --dev phpunit/phpunit:"^9.6" yoast/phpunit-polyfills:"^4.0" --with-all-dependencies --prefer-lowest --no-progress
+          else
+            composer require --dev phpunit/phpunit:"^9.6" yoast/phpunit-polyfills:"^4.0" --with-all-dependencies --no-progress
+          fi
+
+      - name: Verify PHPUnit dependency versions
+        run: |
+          composer show phpunit/phpunit
+          composer show yoast/phpunit-polyfills
+          vendor/bin/phpunit --version | grep -E '^PHPUnit 9\.6\.'
 
       - name: Prepare Database
         run: |
@@ -639,121 +575,126 @@ jobs:
         run: |
           cat > tests/bin/install-wp-tests.sh << 'EOF'
           #!/usr/bin/env bash
-          
+
           if [ $# -lt 3 ]; then
             echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
             exit 1
           fi
-          
-          DB_NAME=$1
-          DB_USER=$2
-          DB_PASS=$3
-          DB_HOST=${4-localhost}
-          WP_VERSION=${5-latest}
-          SKIP_DB_CREATE=${6-false}
-          
-          WP_TESTS_DIR=${WP_TESTS_DIR-/tmp/wordpress-tests-lib}
-          WP_CORE_DIR=${WP_CORE_DIR-/tmp/wordpress/}
-          
+
+          DB_NAME="$1"
+          DB_USER="$2"
+          DB_PASS="$3"
+          DB_HOST="${4-localhost}"
+          WP_VERSION="${5-latest}"
+          SKIP_DB_CREATE="${6-false}"
+
+          WP_TESTS_DIR="${WP_TESTS_DIR-/tmp/wordpress-tests-lib}"
+          WP_CORE_DIR="${WP_CORE_DIR-/tmp/wordpress/}"
+
           download() {
-              if [ $(which curl) ]; then
-                  curl -s "$1" > "$2";
-              elif [ $(which wget) ]; then
+              if command -v curl >/dev/null 2>&1; then
+                  curl -fsSL "$1" > "$2";
+              elif command -v wget >/dev/null 2>&1; then
                   wget -nv -O "$2" "$1"
+              else
+                  echo "curl or wget is required to download WordPress test dependencies"
+                  exit 1
               fi
           }
-          
-          if [[ $WP_VERSION =~ [0-9]+\.[0-9]+(\.[0-9]+)? ]]; then
+
+          if [[ "$WP_VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
               WP_TESTS_TAG="tags/$WP_VERSION"
-          elif [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
+          elif [[ "$WP_VERSION" == 'nightly' || "$WP_VERSION" == 'trunk' ]]; then
               WP_TESTS_TAG="trunk"
           else
-              download http://api.wordpress.org/core/version-check/1.7/ /tmp/wp-latest.json
-              LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
+              download "https://api.wordpress.org/core/version-check/1.7/" "/tmp/wp-latest.json"
+              LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | head -n 1 | sed 's/"version":"//')
               if [[ -z "$LATEST_VERSION" ]]; then
                   echo "Latest WordPress version could not be found"
                   exit 1
               fi
               WP_TESTS_TAG="tags/$LATEST_VERSION"
           fi
-          
-          set -ex
-          
+
+          set -euo pipefail
+
           install_wp() {
-              if [ -d $WP_CORE_DIR ]; then
+              if [ -d "$WP_CORE_DIR" ]; then
                   return;
               fi
-          
-              mkdir -p $WP_CORE_DIR
-          
-              if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
+
+              mkdir -p "$WP_CORE_DIR"
+
+              if [[ "$WP_VERSION" == 'nightly' || "$WP_VERSION" == 'trunk' ]]; then
                   mkdir -p /tmp/wordpress-nightly
-                  download https://wordpress.org/nightly-builds/wordpress-latest.zip  /tmp/wordpress-nightly/wordpress-nightly.zip
+                  download "https://wordpress.org/nightly-builds/wordpress-latest.zip" "/tmp/wordpress-nightly/wordpress-nightly.zip"
                   unzip -q /tmp/wordpress-nightly/wordpress-nightly.zip -d /tmp/wordpress-nightly/
-                  mv /tmp/wordpress-nightly/wordpress/* $WP_CORE_DIR
+                  mv /tmp/wordpress-nightly/wordpress/* "$WP_CORE_DIR"
               else
-                  if [ $WP_VERSION == 'latest' ]; then
+                  if [ "$WP_VERSION" = 'latest' ]; then
                       local ARCHIVE_NAME='latest'
                   else
                       local ARCHIVE_NAME="wordpress-$WP_VERSION"
                   fi
-                  download https://wordpress.org/${ARCHIVE_NAME}.tar.gz  /tmp/wordpress.tar.gz
-                  tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C $WP_CORE_DIR
+                  download "https://wordpress.org/${ARCHIVE_NAME}.tar.gz" "/tmp/wordpress.tar.gz"
+                  tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C "$WP_CORE_DIR"
               fi
-          
-              download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
+
+              download "https://raw.github.com/markoheijnen/wp-mysqli/master/db.php" "$WP_CORE_DIR/wp-content/db.php"
           }
-          
+
           install_test_suite() {
               if [[ $(uname -s) == 'Darwin' ]]; then
                   local ioption='-i.bak'
               else
                   local ioption='-i'
               fi
-          
-              if [ ! -d $WP_TESTS_DIR ]; then
-                  mkdir -p $WP_TESTS_DIR
-                  svn co --quiet https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
-                  svn co --quiet https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+
+              if [ ! -d "$WP_TESTS_DIR" ]; then
+                  mkdir -p "$WP_TESTS_DIR"
+                  svn co --quiet "https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/" "$WP_TESTS_DIR/includes"
+                  svn co --quiet "https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/" "$WP_TESTS_DIR/data"
               fi
-          
-              if [ ! -f wp-tests-config.php ]; then
-                  download https://develop.svn.wordpress.org/${WP_TESTS_TAG}/wp-tests-config-sample.php "$WP_TESTS_DIR"/wp-tests-config.php
-                  WP_CORE_DIR=$(echo $WP_CORE_DIR | sed "s:/\+$::")
-                  sed $ioption "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/':" "$WP_TESTS_DIR"/wp-tests-config.php
-                  sed $ioption "s/youremptytestdbnamehere/$DB_NAME/" "$WP_TESTS_DIR"/wp-tests-config.php
-                  sed $ioption "s/yourusernamehere/$DB_USER/" "$WP_TESTS_DIR"/wp-tests-config.php
-                  sed $ioption "s/yourpasswordhere/$DB_PASS/" "$WP_TESTS_DIR"/wp-tests-config.php
-                  sed $ioption "s|localhost|${DB_HOST}|" "$WP_TESTS_DIR"/wp-tests-config.php
+
+              if [ ! -f "$WP_TESTS_DIR/wp-tests-config.php" ]; then
+                  download "https://develop.svn.wordpress.org/${WP_TESTS_TAG}/wp-tests-config-sample.php" "$WP_TESTS_DIR/wp-tests-config.php"
+                  WP_CORE_DIR=$(printf '%s' "$WP_CORE_DIR" | sed "s:/\+$::")
+                  sed "$ioption" "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/':" "$WP_TESTS_DIR"/wp-tests-config.php
+                  sed "$ioption" "s/youremptytestdbnamehere/$DB_NAME/" "$WP_TESTS_DIR"/wp-tests-config.php
+                  sed "$ioption" "s/yourusernamehere/$DB_USER/" "$WP_TESTS_DIR"/wp-tests-config.php
+                  sed "$ioption" "s/yourpasswordhere/$DB_PASS/" "$WP_TESTS_DIR"/wp-tests-config.php
+                  sed "$ioption" "s|localhost|${DB_HOST}|" "$WP_TESTS_DIR"/wp-tests-config.php
               fi
           }
-          
+
           install_db() {
-              if [ ${SKIP_DB_CREATE} = "true" ]; then
+              if [ "$SKIP_DB_CREATE" = "true" ]; then
                   return 0
               fi
-          
-              local PARTS=(${DB_HOST//\:/ })
-              local DB_HOSTNAME=${PARTS[0]};
-              local DB_SOCK_OR_PORT=${PARTS[1]};
-              local EXTRA=""
-          
-              if ! [ -z $DB_HOSTNAME ] ; then
-                  if [ $(echo $DB_SOCK_OR_PORT | grep -e '^[0-9]\{1,\}$') ]; then
-                      EXTRA=" --host=$DB_HOSTNAME --port=$DB_SOCK_OR_PORT --protocol=tcp"
-                  elif ! [ -z $DB_SOCK_OR_PORT ] ; then
-                      EXTRA=" --socket=$DB_SOCK_OR_PORT"
-                  elif ! [ -z $DB_HOSTNAME ] ; then
-                      EXTRA=" --host=$DB_HOSTNAME --protocol=tcp"
+
+              local DB_HOSTNAME=''
+              local DB_SOCK_OR_PORT=''
+              local EXTRA=()
+              local DB_NAME_ESCAPED="${DB_NAME//\`/\`\`}"
+
+              IFS=':' read -r DB_HOSTNAME DB_SOCK_OR_PORT <<< "$DB_HOST"
+
+              if [ -n "$DB_HOSTNAME" ] ; then
+                  if [[ "$DB_SOCK_OR_PORT" =~ ^[0-9]+$ ]]; then
+                      EXTRA=( "--host=$DB_HOSTNAME" "--port=$DB_SOCK_OR_PORT" "--protocol=tcp" )
+                  elif [ -n "$DB_SOCK_OR_PORT" ] ; then
+                      EXTRA=( "--socket=$DB_SOCK_OR_PORT" )
+                  else
+                      EXTRA=( "--host=$DB_HOSTNAME" "--protocol=tcp" )
                   fi
               fi
-          
+
               # First, ensure database doesn't exist (ignore errors)
-              mysql --user="$DB_USER" --password="$DB_PASS"$EXTRA -e "DROP DATABASE IF EXISTS $DB_NAME" || true
+              mysql --user="$DB_USER" --password="$DB_PASS" "${EXTRA[@]}" -e "DROP DATABASE IF EXISTS \`$DB_NAME_ESCAPED\`" || true
               # Now create fresh database with force flag
-              mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA --force
+              mysqladmin create "$DB_NAME" --user="$DB_USER" --password="$DB_PASS" "${EXTRA[@]}" --force
           }
-          
+
           install_wp
           install_test_suite
           install_db
@@ -770,44 +711,166 @@ jobs:
            *
            * @package OptimizationsAceMc
            */
-          
+
           require_once '/tmp/wordpress-tests-lib/includes/functions.php';
-          
-          function _manually_load_plugin() {
-              add_filter('widgets_init', function() {
-                  return;
-              }, 0);
-              
+
+          if ( ! class_exists( 'WooCommerce' ) ) {
+              class WooCommerce {}
+          }
+
+          if ( ! function_exists( 'wc_get_customer_order_count' ) ) {
+              function wc_get_customer_order_count( $user_id ) {
+                  global $optimizations_ace_mc_test_order_counts;
+
+                  return $optimizations_ace_mc_test_order_counts[ $user_id ] ?? 0;
+              }
+          }
+
+          if ( ! function_exists( 'wpsl_store_header_template' ) ) {
+              function wpsl_store_header_template() {
+                  return '<strong><%= store %></strong>';
+              }
+          }
+
+          if ( ! function_exists( 'wpsl_address_format_placeholders' ) ) {
+              function wpsl_address_format_placeholders() {
+                  return '<%= city %>, <%= state %> <%= zip %>';
+              }
+          }
+
+          function _manually_load_optimizations_ace_mc_plugin() {
               require dirname( dirname( __FILE__ ) ) . '/optimizations-ace-mc.php';
           }
-          
-          tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
-          
+
+          tests_add_filter( 'muplugins_loaded', '_manually_load_optimizations_ace_mc_plugin' );
+
           require '/tmp/wordpress-tests-lib/includes/bootstrap.php';
           EOF
 
       - name: Create Test File
         run: |
-          cat > tests/test-plugin.php << 'EOF'
+          mkdir -p tests/integration
+          cat > tests/integration/OptimizationsAceMcWpTest.php << 'EOF'
           <?php
           /**
-           * Class Test_Optimizations_Ace_Mc
+           * Class OptimizationsAceMcWpTest
            *
            * @package OptimizationsAceMc
            */
-          
-          class Test_Optimizations_Ace_Mc extends WP_UnitTestCase {
+
+          class OptimizationsAceMcWpTest extends WP_UnitTestCase {
               public function test_plugin_loaded() {
-                  $this->assertTrue(class_exists('Optimizations_Ace_Mc'), 'Plugin was not loaded correctly');
+                  $this->assertTrue(function_exists('optimizations_ace_mc'), 'Plugin was not loaded correctly');
+                  $this->assertTrue(class_exists('Optimizations_Ace_Mc'));
+                  $this->assertTrue(class_exists('Optimizations_Ace_Mc_Settings'));
+                  $this->assertTrue(class_exists('Optimizations_Ace_Mc_Admin_Page'));
+                  $this->assertTrue(class_exists('Optimizations_Ace_Mc_WooCommerce_Optimizations'));
+                  $this->assertTrue(class_exists('Optimizations_Ace_Mc_Wpsl_Optimizations'));
+                  $this->assertTrue(class_exists('Optimizations_Ace_Mc_Admin_Optimizations'));
+                  $this->assertInstanceOf(Optimizations_Ace_Mc::class, optimizations_ace_mc());
               }
-              
+
+              public function test_plugin_hooks_registered() {
+                  $this->assertSame(10, has_action('plugins_loaded', 'optimizations_ace_mc_init'));
+              }
+
+              public function test_plugin_constants_defined() {
+                  $this->assertTrue(defined('OPTIMIZATIONS_ACE_MC_VERSION'));
+                  $this->assertTrue(defined('OPTIMIZATIONS_ACE_MC_PLUGIN_FILE'));
+                  $this->assertTrue(defined('OPTIMIZATIONS_ACE_MC_PLUGIN_DIR'));
+                  $this->assertTrue(defined('OPTIMIZATIONS_ACE_MC_PLUGIN_URL'));
+                  $this->assertNotEmpty(OPTIMIZATIONS_ACE_MC_VERSION);
+              }
+
+              public function test_sanitize_settings_keeps_known_boolean_options() {
+                  $settings = new Optimizations_Ace_Mc_Settings();
+                  $result = $settings->sanitize_settings([
+                      'woocommerce_show_empty_categories' => '1',
+                      'woocommerce_hide_category_count' => '',
+                      'woocommerce_user_order_count_column' => true,
+                      'wpsl_show_store_categories' => 'yes',
+                      'wpsl_disable_rest_api' => 0,
+                      'admin_user_registration_date_column' => 1,
+                      'unknown_option' => 1,
+                  ]);
+
+                  $this->assertSame(
+                      [
+                          'woocommerce_show_empty_categories' => true,
+                          'woocommerce_hide_category_count' => false,
+                          'woocommerce_user_order_count_column' => true,
+                          'wpsl_show_store_categories' => true,
+                          'wpsl_disable_rest_api' => false,
+                          'admin_user_registration_date_column' => true,
+                      ],
+                      $result
+                  );
+                  $this->assertArrayNotHasKey('unknown_option', $result);
+              }
+
+              public function test_user_order_count_column_displays_woocommerce_count() {
+                  global $optimizations_ace_mc_test_order_counts;
+
+                  $optimization = new Optimizations_Ace_Mc_WooCommerce_Optimizations(new Optimizations_Ace_Mc_Settings());
+                  $user_id = self::factory()->user->create();
+                  $optimizations_ace_mc_test_order_counts = [
+                      $user_id => 7,
+                  ];
+
+                  $columns = $optimization->add_user_order_count_column([]);
+
+                  $this->assertArrayHasKey('user_order_count', $columns);
+                  $this->assertSame('7', $optimization->display_user_order_count_column('', 'user_order_count', $user_id));
+              }
+
+              public function test_registration_date_column_displays_user_registration_date() {
+                  $optimization = new Optimizations_Ace_Mc_Admin_Optimizations(new Optimizations_Ace_Mc_Settings());
+                  update_option('date_format', 'Y-m-d');
+                  update_option('time_format', 'H:i');
+
+                  $user_id = self::factory()->user->create([
+                      'user_registered' => '2024-01-02 03:04:05',
+                  ]);
+
+                  $columns = $optimization->add_user_registration_date_column([]);
+
+                  $this->assertArrayHasKey('registration_date', $columns);
+                  $this->assertSame('registered', $optimization->make_user_registration_date_sortable([])['registration_date']);
+                  $this->assertSame('2024-01-02 03:04', $optimization->display_user_registration_date_column('', 'registration_date', $user_id));
+              }
+
+              public function test_store_locator_template_uses_filterable_category_label() {
+                  $optimization = new Optimizations_Ace_Mc_Wpsl_Optimizations(new Optimizations_Ace_Mc_Settings());
+
+                  add_filter('optimizations_ace_mc_store_category_label', static function () {
+                      return 'Services:';
+                  });
+
+                  $template = $optimization->customize_info_window_template();
+
+                  remove_all_filters('optimizations_ace_mc_store_category_label');
+
+                  $this->assertStringContainsString('Services:', $template);
+                  $this->assertStringContainsString('<%= terms %>', $template);
+                  $this->assertStringContainsString('createInfoWindowActions', $template);
+              }
+
+              public function test_store_locator_rest_api_can_be_disabled() {
+                  $optimization = new Optimizations_Ace_Mc_Wpsl_Optimizations(new Optimizations_Ace_Mc_Settings());
+
+                  $this->assertSame(
+                      ['show_in_rest' => false],
+                      $optimization->disable_store_locator_rest_api(['show_in_rest' => true])
+                  );
+              }
+
               public function test_wordpress_version_compatibility() {
                   global $wp_version;
                   $this->assertNotEmpty($wp_version, 'WordPress version should be available');
-                  
+
                   // Test that we're running on a supported WordPress version
-                  $min_wp_version = '6.6';
-                  $this->assertTrue(version_compare($wp_version, $min_wp_version, '>='), 
+                  $min_wp_version = '6.8';
+                  $this->assertTrue(version_compare($wp_version, $min_wp_version, '>='),
                       "WordPress version {$wp_version} should be >= {$min_wp_version}");
               }
           }
@@ -821,13 +884,10 @@ jobs:
               bootstrap="tests/bootstrap.php"
               backupGlobals="false"
               colors="true"
-              convertErrorsToExceptions="true"
-              convertNoticesToExceptions="true"
-              convertWarningsToExceptions="true"
           >
               <testsuites>
                   <testsuite name="Optimizations ACE MC">
-                      <directory prefix="test-" suffix=".php">./tests/</directory>
+                      <file>./tests/integration/OptimizationsAceMcWpTest.php</file>
                   </testsuite>
               </testsuites>
           </phpunit>
@@ -835,7 +895,7 @@ jobs:
 
       - name: Setup WP Tests
         run: |
-          bash tests/bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:3306 ${{ matrix.wp-version }}
+          bash tests/bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:3306 "${{ matrix.wp-version }}"
 
       - name: Run plugin test
         run: vendor/bin/phpunit --config phpunit.xml
@@ -843,27 +903,14 @@ jobs:
       - name: Report test status
         if: ${{ always() }}
         run: |
-          if [ ${{ job.status }} == 'success' ]; then
-            echo "✅ Tests passed successfully on PHP ${{ matrix.php-version }} with WordPress ${{ matrix.wp-version }}"
+          if [ "${{ job.status }}" = 'success' ]; then
+            echo "Tests passed on PHP ${{ matrix.php-version }} with WordPress ${{ matrix.wp-version }}."
           else
-            echo "❌ Tests failed on PHP ${{ matrix.php-version }} with WordPress ${{ matrix.wp-version }}"
+            echo "Tests failed on PHP ${{ matrix.php-version }} with WordPress ${{ matrix.wp-version }}."
           fi
 
       - name: Ensure repository files available after failure
         if: ${{ failure() }}
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
-
-      - name: Create issue on test failure
-        if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: ${{ matrix.php-version }}
-          WP_VERSION: ${{ matrix.wp-version }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        with:
-          filename: .github/ISSUE_TEMPLATE/wp-version-test-failure.md
-          update_existing: false

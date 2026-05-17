@@ -1,28 +1,21 @@
-# This workflow automates the release process for the Optimizations ACE MC plugin.
-# It extracts the version number from the main plugin file, checks if a release already exists,
-# creates a zip file with the plugin contents, extracts release notes from the changelog,
-# creates a GitHub release with the zip file attached, and updates version references in the README.
-# The workflow is triggered on pushes to main/master branches or can be manually triggered.
-
 name: Create Release
 
 on:
   push:
-    # Trigger on pushes to main or master branch
+    # Trigger on pushes to the main or master branch.
     branches: [ main, master ]
-  # Allow manual triggering
+  # Allow manual triggering.
   workflow_dispatch:
 
 permissions:
   contents: write
-  discussions: write
 
 jobs:
   check-and-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
 
@@ -30,7 +23,7 @@ jobs:
         id: get_version
         run: |
           VERSION=$(grep -oP "Version: \K[0-9]+\.[0-9]+\.[0-9]+" optimizations-ace-mc.php)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Found version: $VERSION"
 
       - name: Check if release exists
@@ -38,47 +31,56 @@ jobs:
         run: |
           RELEASE_EXISTS=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/${{ github.repository }}/releases/tags/v${{ steps.get_version.outputs.version }})
           if [[ "$RELEASE_EXISTS" == "200" ]]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "Release v${{ steps.get_version.outputs.version }} already exists"
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "exists=false" >> "$GITHUB_OUTPUT"
             echo "Release v${{ steps.get_version.outputs.version }} does not exist yet"
           fi
 
       - name: Create zip file
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          mkdir -p optimizations-ace-mc
-          cp optimizations-ace-mc.php optimizations-ace-mc/
-          cp README.md optimizations-ace-mc/
-          cp CHANGELOG.md optimizations-ace-mc/
-          cp LICENSE optimizations-ace-mc/ || echo "No LICENSE file found"
-          [ -d languages ] && cp -r languages optimizations-ace-mc/ || echo "No languages directory found"
-          zip -r optimizations-ace-mc-${{ steps.get_version.outputs.version }}.zip optimizations-ace-mc
+          PLUGIN_SLUG="optimizations-ace-mc"
+          rm -rf "$PLUGIN_SLUG"
+          mkdir -p "$PLUGIN_SLUG"
+          cp optimizations-ace-mc.php "$PLUGIN_SLUG/"
+          cp -r includes "$PLUGIN_SLUG/"
+          if [ -d assets ]; then
+            cp -r assets "$PLUGIN_SLUG/"
+          fi
+          cp readme.txt "$PLUGIN_SLUG/"
+          cp README.md "$PLUGIN_SLUG/"
+          cp CHANGELOG.md "$PLUGIN_SLUG/"
+          cp LICENSE "$PLUGIN_SLUG/" || echo "No LICENSE file found"
+          if [ -d languages ]; then
+            cp -r languages "$PLUGIN_SLUG/"
+          fi
+          zip -r "${PLUGIN_SLUG}-${{ steps.get_version.outputs.version }}.zip" "$PLUGIN_SLUG"
 
       - name: Get changelog entry
         if: steps.check_release.outputs.exists == 'false'
         id: get_changelog
         run: |
-          CHANGELOG_ENTRY=$(awk -v ver="## ${{ steps.get_version.outputs.version }}" 'BEGIN{flag=0} $0~ver{flag=1; print; next} /^## [0-9]+\.[0-9]+\.[0-9]+/{flag=0} flag{print}' CHANGELOG.md | tail -n +2)
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG_ENTRY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          CHANGELOG_ENTRY=$(awk -v ver="${{ steps.get_version.outputs.version }}" 'BEGIN{flag=0; target="^## \\[?" ver "\\]?([[:space:]-]|$)"} $0 ~ target {flag=1; print; next} /^## \[?[0-9]+\.[0-9]+\.[0-9]+\]?([[:space:]-]|$)/ {flag=0} flag {print}' CHANGELOG.md | tail -n +2)
+          echo "changelog<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGELOG_ENTRY" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Create Release
         if: steps.check_release.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
           body: |
             ${{ steps.get_changelog.outputs.changelog }}
-            
+
             ## Installation
             1. Download the zip file
             2. Upload to your WordPress site through the Plugins > Add New > Upload menu
             3. Activate the plugin
-            
+
             [Full Documentation](https://github.com/${{ github.repository }})
           files: optimizations-ace-mc-${{ steps.get_version.outputs.version }}.zip
           draft: false
@@ -88,33 +90,31 @@ jobs:
       - name: Update README version
         if: steps.check_release.outputs.exists == 'false'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.get_version.outputs.version }}
         run: |
           README_FILE="README.md"
           TMP_FILE=$(mktemp)
-          
-          # Update the version badge with the new version and logo
-          sed -E 's/\[\!Version\]\(https:\/\/img\.shields\.io\/badge\/Version-[0-9]+\.[0-9]+\.[0-9]+-orange\.svg\?logo=github\)\]\(https:\/\/github\.com\/EngineScript\/optimizations-ace-mc\/releases\/latest\/download\/optimizations-ace-mc-[0-9]+\.[0-9]+\.[0-9]+\.zip\)/\[\!Version\]\(https:\/\/img\.shields\.io\/badge\/Version-'"$VERSION"'-orange\.svg\?logo=github\)\]\(https:\/\/github\.com\/EngineScript\/optimizations-ace-mc\/releases\/latest\/download\/optimizations-ace-mc-'"$VERSION"'\.zip\)/g' "$README_FILE" > "$TMP_FILE"
-          
-          # Replace file if changes were made
+          trap 'rm -f "$TMP_FILE"' EXIT
+
+          # Update the version badge with the new version and release asset.
+          NEW_BADGE="[![Version](https://img.shields.io/badge/Version-${VERSION}-orange.svg?logo=github)](https://github.com/${{ github.repository }}/releases/latest/download/optimizations-ace-mc-${VERSION}.zip)"
+          sed -E "s#\\[!\\[Version\\]\\(https://img\\.shields\\.io/badge/Version-[0-9]+\\.[0-9]+\\.[0-9]+-orange\\.svg\\?logo=github\\)\\]\\([^)]*optimizations-ace-mc-[0-9]+\\.[0-9]+\\.[0-9]+\\.zip\\)#$NEW_BADGE#g" "$README_FILE" > "$TMP_FILE"
+
+          # Replace the file if changes were made.
           if ! cmp -s "$README_FILE" "$TMP_FILE"; then
             cp "$TMP_FILE" "$README_FILE"
             echo "Updated README.md with version $VERSION"
-            
-            # Configure git
+
+            # Configure Git.
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
             git config --local user.name "github-actions[bot]"
-            
-            # Commit and push the changes
+
+            # Commit and push the changes.
             git add "$README_FILE"
             git commit -m "docs: update README.md version to $VERSION [skip ci]"
-            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-            
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+
             echo "::notice::README.md updated with latest version $VERSION"
           else
             echo "::notice::README.md already has the correct version"
           fi
-          
-          # Clean up temporary file
-          rm "$TMP_FILE"

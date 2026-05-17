@@ -1,6 +1,6 @@
 # Configuration for GitHub Actions Labeler
 # This file defines how automatic labels are applied to pull requests based on the files changed.
-# It helps categorize PRs by type of change (core functionality, frontend, documentation, etc.)
+# It helps categorize PRs by change type (core functionality, frontend, documentation, etc.)
 # and makes it easier to identify what areas of the plugin are being modified.
 # The labels are applied automatically by the issue-management.yml workflow.
 
@@ -10,19 +10,18 @@ core:
     - any-glob-to-any-file: optimizations-ace-mc.php
     - any-glob-to-any-file: assets/js/**/*
 
-# Frontend related changes
+# Frontend-related changes
 frontend:
   - changed-files:
     - any-glob-to-any-file: assets/css/**/*
     - any-glob-to-any-file: assets/images/**/*
-
 
 # Workflows and automation
 automation:
   - changed-files:
     - any-glob-to-any-file: .github/**/*
 
-# Security related changes
+# Security-related changes
 security:
   - changed-files:
     - any-glob-to-any-file: '**/*.php'
@@ -34,7 +33,7 @@ documentation:
     - any-glob-to-any-file: README.md
     - any-glob-to-any-file: '*.md'
 
-# Export functionality
+# Optimization functionality
 optimization:
   - changed-files:
     - any-glob-to-any-file: '**/optimi*.php'

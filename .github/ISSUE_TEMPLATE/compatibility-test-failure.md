@@ -19,14 +19,14 @@ The automated compatibility test for PHP {{ env.PHP_VERSION }} has failed.
 
 ### Next Steps
 
-This issue has been automatically created because the Optimizations ACE MC plugin failed to load properly with PHP {{ env.PHP_VERSION }}. This could indicate compatibility issues that need to be addressed.
+This issue was automatically created because the Optimizations ACE MC plugin failed to load properly with PHP {{ env.PHP_VERSION }}. This could indicate compatibility issues that need attention.
 
-#### Recommended Actions:
+#### Recommended Actions
 
-1. Review the workflow logs for specific error messages
-2. Check for PHP {{ env.PHP_VERSION }} specific syntax or function compatibility issues
-3. Test locally with PHP {{ env.PHP_VERSION }} to reproduce the issue
-4. Make necessary code updates to ensure compatibility
+1. Review the workflow logs for specific error messages.
+2. Check for syntax or function compatibility issues specific to PHP {{ env.PHP_VERSION }}.
+3. Test with PHP {{ env.PHP_VERSION }} to reproduce the issue.
+4. Make the code updates needed to ensure compatibility.
 
 Once fixed, please close this issue and reference it in the changelog.
 

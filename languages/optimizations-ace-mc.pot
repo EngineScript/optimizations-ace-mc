@@ -1,179 +1,181 @@
 # Copyright (C) 2026 EngineScript
-# This file is distributed under the same license as the Optimizations ACE MC plugin.
+# This file is distributed under the GPL-3.0-or-later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Optimizations ACE MC 1.0.8\n"
-"Report-Msgid-Bugs-To: https://github.com/EngineScript/optimizations-ace-mc/issues\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/optimizations-ace-mc\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-22T00:00:00+00:00\n"
+"POT-Creation-Date: 2026-05-17T22:43:24+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: optimizations-ace-mc\n"
 
-#: class-optimizations-ace-mc.php
-msgid "Unserializing is not allowed."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:170
-msgid "Order Count"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:260
-msgid "Certifications:"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:287
-msgid "Registration Date"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:306
-msgid "Unknown"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:325
-msgid "ACE MC Optimizations"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:338
-msgid "WooCommerce Optimizations"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:344
-msgid "Show Empty Categories"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:351
-msgid "Show empty product categories in WooCommerce category listings."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:356
-msgid "Hide Category Product Count"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:363
-msgid "Hide the product count numbers in category listings."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:368
-msgid "User Order Count Column"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:375
-msgid "Add an order count column to the WordPress Users admin table."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:381
-msgid "WP Store Locator Optimizations"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:387
-msgid "Show Store Categories"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:394
-msgid "Display store categories in the store locator info windows."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:399
-msgid "Disable REST API"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:406
-msgid "Disable REST API endpoint for WP Store Locator post type for security."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:412
-msgid "WordPress Admin Optimizations"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:418
-msgid "User Registration Date Column"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:425
-msgid "Add a registration date column to the WordPress Users admin table."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:445
-msgid "Configure WooCommerce-specific optimizations. These features enhance the WooCommerce user experience and admin functionality."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:451
-msgid "Configure WP Store Locator optimizations. These features enhance store location functionality and security."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:457
-msgid "Configure WordPress admin interface optimizations. These features enhance the admin user experience."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:483
-msgid "You do not have sufficient permissions to access this page."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:487
-msgid "Settings saved successfully!"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:493
-msgid "Plugin Information:"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:494
-msgid "This plugin provides pre-configured optimizations for WooCommerce, WP Store Locator, and WordPress admin interfaces."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:497
-msgid "Version:"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:498
-msgid "WordPress:"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:498
-msgid "6.6+ required"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:499
-msgid "PHP:"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:499
-msgid "8.1+ required"
-msgstr ""
-
-#: class-optimizations-ace-mc.php
-msgid "Support & Documentation"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:537
-msgid "For support, bug reports, or feature requests:"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:539
-msgid "Visit the GitHub repository"
-msgstr ""
-
-#. Plugin Name of the plugin/theme
+#. Plugin Name of the plugin
+#: optimizations-ace-mc.php
 msgid "Optimizations ACE MC"
 msgstr ""
 
-#. Plugin URI of the plugin/theme
+#. Plugin URI of the plugin
+#: optimizations-ace-mc.php
 msgid "https://github.com/EngineScript/optimizations-ace-mc"
 msgstr ""
 
-#. Description of the plugin/theme
-msgid "A lightweight WordPress optimization plugin with pre-configured performance enhancements for WooCommerce, WP Store Locator, and WordPress admin."
+#. Description of the plugin
+#: optimizations-ace-mc.php
+msgid "A lightweight WordPress optimization plugin with configurable performance enhancements for WooCommerce, WP Store Locator, and WordPress admin."
 msgstr ""
 
-#. Author of the plugin/theme
+#. Author of the plugin
+#: optimizations-ace-mc.php
 msgid "EngineScript"
 msgstr ""
 
-#. Author URI of the plugin/theme
+#. Author URI of the plugin
+#: optimizations-ace-mc.php
 msgid "https://github.com/EngineScript"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-optimizations.php:70
+msgid "Registration Date"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-optimizations.php:91
+msgid "Unknown"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:65
+#: includes/class-optimizations-ace-mc-admin-page.php:66
+msgid "ACE MC Optimizations"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:121
+msgid "WooCommerce Optimizations"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:126
+msgid "Show Empty Categories"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:127
+msgid "Hide Category Product Count"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:128
+msgid "User Order Count Column"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:139
+msgid "WP Store Locator Optimizations"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:144
+msgid "Show Store Categories"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:145
+msgid "Disable REST API"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:156
+msgid "WordPress Admin Optimizations"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:161
+msgid "User Registration Date Column"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:191
+msgid "Configure WooCommerce-specific optimizations. These features enhance the WooCommerce experience and admin functionality."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:200
+msgid "Configure WP Store Locator optimizations. These features enhance store locator functionality and security."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:209
+msgid "Configure WordPress admin interface optimizations. These features enhance the admin experience."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:246
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:278
+msgid "Plugin Information:"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:279
+msgid "This plugin provides configurable optimizations for WooCommerce, WP Store Locator, and WordPress admin interfaces."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:282
+msgid "Version:"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:283
+msgid "WordPress:"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:283
+msgid "6.8+ required"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:284
+msgid "PHP:"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:284
+msgid "8.2+ required"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:298
+msgid "Support & Documentation"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:300
+msgid "For support, bug reports, or feature requests:"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-admin-page.php:302
+msgid "Visit the GitHub repository"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-settings.php:127
+msgid "Show empty product categories in WooCommerce category listings."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-settings.php:128
+msgid "Hide the product count numbers in category listings."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-settings.php:129
+msgid "Add an order count column to the WordPress users admin table."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-settings.php:130
+msgid "Display store categories in the store locator info windows."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-settings.php:131
+msgid "Disable the REST API endpoint for the WP Store Locator post type for security."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-settings.php:132
+msgid "Add a registration date column to the WordPress users admin table."
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-woocommerce-optimizations.php:67
+msgid "Order Count"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc-wpsl-optimizations.php:94
+msgid "Certifications:"
+msgstr ""
+
+#: includes/class-optimizations-ace-mc.php:72
+msgid "Unserializing is not allowed."
 msgstr ""

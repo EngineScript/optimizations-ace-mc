@@ -32,11 +32,3 @@
 	margin-top: 2px;
 	flex-shrink: 0;
 }
-
-.optimizations-ace-mc-status--active {
-	color: green;
-}
-
-.optimizations-ace-mc-status--inactive {
-	color: orange;
-}
