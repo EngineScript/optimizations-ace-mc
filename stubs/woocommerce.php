@@ -14,7 +14,7 @@ if ( ! defined( 'OPTIMIZATIONS_ACE_MC_PLUGIN_DIR' ) ) {
 }
 
 if ( ! defined( 'OPTIMIZATIONS_ACE_MC_VERSION' ) ) {
-	define( 'OPTIMIZATIONS_ACE_MC_VERSION', '1.0.8' );
+	define( 'OPTIMIZATIONS_ACE_MC_VERSION', '1.5.0' );
 }
 
 /**

@@ -12,6 +12,8 @@ on:
   pull_request_target:
     types: [opened]
 
+permissions: read-all
+
 jobs:
   guide:
     runs-on: ubuntu-latest

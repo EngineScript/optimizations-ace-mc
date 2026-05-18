@@ -3,7 +3,7 @@
  * Plugin Name: Optimizations ACE MC
  * Plugin URI: https://github.com/EngineScript/optimizations-ace-mc
  * Description: A lightweight WordPress optimization plugin with configurable performance enhancements for WooCommerce, WP Store Locator, and WordPress admin.
- * Version: 1.0.8
+ * Version: 1.5.0
  * Author: EngineScript
  * Author URI: https://github.com/EngineScript
  * License: GPL-3.0-or-later
@@ -23,7 +23,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define plugin constants.
-define( 'OPTIMIZATIONS_ACE_MC_VERSION', '1.0.8' );
+define( 'OPTIMIZATIONS_ACE_MC_VERSION', '1.5.0' );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_FILE', __FILE__ );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

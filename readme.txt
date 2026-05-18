@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.8
 Tested up to: 6.9
 Requires PHP: 8.2
-Stable tag: 1.0.8
+Stable tag: 1.5.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,7 +67,7 @@ Yes, this plugin focuses on specific admin and functionality enhancements rather
 
 == Changelog ==
 
-= Unreleased =
+= 1.5.0 - 2026-05-18 =
 * Changed: Updated the WordPress compatibility workflow matrix to test PHP 8.2 through 8.5 only
 * Changed: Removed workflow matrix jobs below the minimum supported PHP version
 * Changed: Raised minimum PHP version to 8.2 and minimum WordPress version to 6.8
