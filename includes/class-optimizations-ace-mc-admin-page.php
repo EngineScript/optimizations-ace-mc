@@ -83,7 +83,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 
 		wp_enqueue_style(
 			'optimizations-ace-mc-admin',
-			OPTIMIZATIONS_ACE_MC_PLUGIN_URL . 'assets/css/admin.css',
+			plugins_url( 'assets/css/admin.css', OPTIMIZATIONS_ACE_MC_PLUGIN_FILE ),
 			[],
 			OPTIMIZATIONS_ACE_MC_VERSION
 		);

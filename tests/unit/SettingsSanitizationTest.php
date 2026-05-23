@@ -46,7 +46,7 @@ final class SettingsSanitizationTest extends TestCase {
 				'woocommerce_user_order_count_column' => true,
 				'wpsl_show_store_categories'          => 'yes',
 				'wpsl_disable_rest_api'               => [ '1' ],
-				'admin_user_registration_date_column' => 'unexpected-string',
+				'admin_user_registration_date_column' => (object) [ 'value' => '1' ],
 				'unknown_option'                      => '1',
 			]
 		);
