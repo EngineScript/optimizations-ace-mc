@@ -28,6 +28,9 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  PLUGIN_SLUG: optimizations-ace-mc
+
 jobs:
   plugin-check:
     name: WP Plugin Check (PHP 8.3)
@@ -38,14 +41,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6
         with:
           # Always fetch the latest commit and disable checkout caching.
           fetch-depth: 0
           clean: true
+          persist-credentials: false
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -72,12 +76,11 @@ jobs:
         run: |
           rm -rf plugin-check-build 2>/dev/null || true
 
-          PLUGIN_SLUG="optimizations-ace-mc"
           BUILD_DIR="plugin-check-build/${PLUGIN_SLUG}"
 
           mkdir -p "$BUILD_DIR"
 
-          cp optimizations-ace-mc.php "$BUILD_DIR/"
+          cp "${PLUGIN_SLUG}.php" "$BUILD_DIR/"
           cp -r includes "$BUILD_DIR/"
           if [ -d assets ]; then
             cp -r assets "$BUILD_DIR/"
@@ -91,11 +94,11 @@ jobs:
           fi
 
       - name: WordPress Plugin Check
-        uses: WordPress/plugin-check-action@18573eb38f13543484a1f095672dae3849a4fbb0 # v1.1.6
+        uses: WordPress/plugin-check-action@v1
         with:
           # Production-style plugin directory. Excludes repo-only files such as
           # .github, .vscode, GEMINI.md, and other development artifacts.
-          build-dir: './plugin-check-build/optimizations-ace-mc'
+          build-dir: './plugin-check-build/${{ env.PLUGIN_SLUG }}'
 
           # Configure the categories to check.
           categories: |
@@ -125,10 +128,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -136,7 +141,7 @@ jobs:
           tools: composer:v2
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
+        uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: "--prefer-dist --no-progress"
@@ -155,10 +160,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -166,7 +173,7 @@ jobs:
           tools: composer:v2
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
+        uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: "--prefer-dist --no-progress"
@@ -191,7 +198,7 @@ jobs:
 
       - name: Create VIP-specific PHPCS configuration
         run: |
-          cat > phpcs-vip.xml << 'EOF'
+          cat > phpcs-vip.xml << EOF
           <?xml version="1.0"?>
           <ruleset name="WordPress VIP Go Coding Standards">
               <description>WordPress VIP Go coding standards for enterprise WordPress development</description>
@@ -236,7 +243,7 @@ jobs:
               <rule ref="WordPress.WP.I18n">
                   <properties>
                       <property name="text_domain" type="array">
-                          <element value="optimizations-ace-mc"/>
+                          <element value="${PLUGIN_SLUG}"/>
                       </property>
                   </properties>
               </rule>
@@ -291,11 +298,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6
         with:
           # Always fetch the latest commit, disable any caching
           fetch-depth: 0
           clean: true
+          persist-credentials: false
 
       - name: Verify latest commit
         run: |
@@ -306,7 +314,7 @@ jobs:
           echo "=== End Git Information ==="
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -339,10 +347,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -350,7 +360,7 @@ jobs:
           tools: composer:v2
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
+        uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: "--prefer-dist --no-progress"
@@ -368,6 +378,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
@@ -478,14 +490,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6
         with:
           # Always fetch the latest commit, disable any caching
           fetch-depth: 0
           clean: true
+          persist-credentials: false
 
       - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -539,10 +552,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup PHP ${{ matrix.php-version }}
-        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
@@ -576,7 +591,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y subversion
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
+        uses: ramsey/composer-install@v4
         with:
           dependency-versions: ${{ matrix.dependency-versions }}
           composer-options: "--prefer-dist --no-progress"
@@ -776,7 +791,13 @@ jobs:
           }
 
           function _manually_load_optimizations_ace_mc_plugin() {
-              require dirname( dirname( __FILE__ ) ) . '/optimizations-ace-mc.php';
+              $plugin_slug = getenv( 'PLUGIN_SLUG' );
+
+              if ( false === $plugin_slug || '' === $plugin_slug ) {
+                  throw new RuntimeException( 'PLUGIN_SLUG is not set.' );
+              }
+
+              require dirname( dirname( __FILE__ ) ) . '/' . $plugin_slug . '.php';
           }
 
           tests_add_filter( 'muplugins_loaded', '_manually_load_optimizations_ace_mc_plugin' );
@@ -948,6 +969,7 @@ jobs:
 
       - name: Ensure repository files available after failure
         if: ${{ failure() }}
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
