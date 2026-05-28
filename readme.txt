@@ -2,7 +2,7 @@
 Contributors: EngineScript
 Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.8
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 8.2
 Stable tag: 1.5.0
 License: GPLv3 or later
