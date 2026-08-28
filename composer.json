@@ -23,7 +23,7 @@
     "friendsofphp/php-cs-fixer": "^3.95",
     "phpmd/phpmd": "^2.15",
     "vimeo/psalm": "^6.16",
-    "php-stubs/wordpress-stubs": "^6.9",
+    "php-stubs/wordpress-stubs": "^7.0",
     "szepeviktor/phpstan-wordpress": "^2.0",
     "phpstan/phpstan": "^2.1",
     "phpcompatibility/phpcompatibility-wp": "^2.1"
