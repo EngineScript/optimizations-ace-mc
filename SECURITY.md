@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We release security updates for the latest major version of EngineScript. Please ensure you are running the latest version to receive security patches.
+We release security updates for the latest major version of this plugin. Please ensure you are running the latest version to receive security patches.
 
 | Version    | Supported          |
 |------------|--------------------|
@@ -11,15 +11,14 @@ We release security updates for the latest major version of EngineScript. Please
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Optimizations ACE MC, please follow these steps:
+If you discover a security vulnerability in this plugin, please follow these steps:
 
 1. **Do not open a public issue.**
-2. Email us at [security@enginescript.com](mailto:security@enginescript.com) with details of the vulnerability.
+2. Report it privately through GitHub: open the [vulnerability report form](https://github.com/EngineScript/optimizations-ace-mc/security/advisories/new) (**Security > Report a vulnerability**).
 3. Include:
    - A clear description of the issue
    - Steps to reproduce (if applicable)
    - Any relevant logs or screenshots
-   - Your contact information for follow-up
 
 We will acknowledge your report within 5 business days and work with you to resolve the issue promptly.
 
@@ -35,4 +34,4 @@ We will acknowledge your report within 5 business days and work with you to reso
 
 We follow a responsible disclosure process. Once a vulnerability is confirmed and a fix is available, we will publish a security advisory and credit the reporter (unless anonymity is requested).
 
-Thank you for helping keep Optimizations ACE MC and its users safe!
+Thank you for helping keep this plugin and its users safe!
