@@ -2,72 +2,75 @@
 applyTo: '**'
 ---
 
-# Optimizations ACE MC - Development Standards
+# AGENTS.md
 
 ## Environment
 
-- **Work in:** Remote GitHub Codespaces only. Never suggest local terminal commands.
-- **WordPress:** 6.8+ minimum
-- **PHP:** 8.2+ minimum (use typed properties, readonly, enums, union types, named arguments)
-- **WooCommerce:** 5.0+ (guaranteed active - no activation checks needed)
-- **WP Store Locator:** Guaranteed active - no activation checks needed
-- **Standards:** Follow [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/) for PHP, JS, CSS, HTML, and accessibility.
+- Use `rg` for search.
+- Prefer project-local scripts and lockfile-backed dependencies when they exist. Use global tools as fallback checks when a repo has no local tooling yet.
+- Windows-backed global tools are exposed through WSL shims in `/usr/local/bin`.
+- The `/usr/local/bin/node`, `/usr/local/bin/npm`, and `/usr/local/bin/npx` shims translate existing absolute WSL paths with `wslpath -w` before calling Windows Node. Use normal WSL paths such as `/tmp/file.js` and `/mnt/c/...` through those shims.
 
-## Security
+## Setup Commands
 
-All security rules are **mandatory and non-negotiable**.
+- If `composer.json` exists, run `composer install --no-interaction --prefer-dist`.
+- If `package-lock.json` exists, run `npm ci`; if only `package.json` exists, run `npm install`.
+- If Python workflow files or tests need dependencies, prefer the repo's `.venv`, `requirements*.txt`, `pyproject.toml`, `uv.lock`, `poetry.lock`, or `tox.ini`.
+- If a Ruby `Gemfile.lock` exists, run `bundle install` and prefer `bundle exec <tool>`.
+- Do not add a package manifest only to use a global fallback tool. Add manifests when the repo should own reproducible build, test, lint, or CI behavior.
 
-**Input:** Sanitize all user input - `sanitize_text_field()`, `sanitize_email()`, `wp_kses()`, `absint()`. Validate with `is_email()` and `wp_verify_nonce()`. Use `$wpdb->prepare()` for database queries; never use raw SQL.
+## Testing Instructions
 
-**Output:** Escape all dynamic output - `esc_html()`, `esc_attr()`, `esc_url()`, `esc_js()`.
+- Prefer repo scripts first: `composer test`, `composer check-all`, `npm test`, `npm run lint`, `npm run build`, `pytest`, `tox`, `nox`, or `bundle exec rspec`.
+- For PHP fallback checks, use relevant tools from: `parallel-lint`, `phpcs`, `phpcbf`, `php-cs-fixer`, `phpmd`, `pdepend`, `phpmetrics`, `phpstan`, `psalm`, `phpunit`, and `wp`.
+- For JavaScript, HTML, CSS, and Markdown fallback checks, use relevant tools from: `eslint`, `jest`, `vitest`, `prettier`, `stylelint`, `htmlhint`, `html-validate`, `markdownlint-cli2`, `cspell`, `codespell`, `playwright`, `tsc`, `tsx`, `pa11y`, `svgo`, `sass`, `postcss`, `autoprefixer`, `http-server`, `jscpd`, `depcruise`, `nyc`, and `jsdoc`.
+- For Bash fallback checks, use `shellcheck`, `shfmt`, and `bats`.
+- For GitHub Actions and config files, use `actionlint`, `yamllint`, `jq`, `yq`, `gh`, and `check-jsonschema`.
+- For Python workflow support, use relevant tools from: `pytest`, `tox`, `nox`, `ruff`, `mypy`, `pyright`, `bandit`, `black`, `isort`, `coverage`, `radon`, `xenon`, `pip-audit`, `pre-commit`, and `check-jsonschema`.
+- For Ruby fallback checks, use `rubocop`, `standardrb`, `reek`, `flog`, `flay`, `rubycritic`, `brakeman`, and `bundler-audit`. `rubocop --version` and `standardrb --version` can take several seconds through the WSL shim.
+- Rector is not installed globally. Install and run Rector per repo if that repo needs it.
 
-**Authorization:** Check `current_user_can()` before sensitive operations. Use `wp_nonce_field()` / `wp_verify_nonce()` for forms and state-changing requests.
+## Code Style
 
-**Prevention:** Guard against SQL injection, XSS, CSRF, LFI, and path traversal. Follow the principle of least privilege. Flag and fix security issues immediately when found.
+- Match the existing code style and framework conventions.
+- Prefer existing repo helpers and scripts over inventing new wrappers.
+- Add or update focused tests when behavior changes.
 
-## Code Standards
+## Project Standards
 
-- **WordPress APIs only:** Use WP functions instead of raw PHP equivalents. Prefer hooks (`add_action()`, `add_filter()`) over direct calls.
-- **PHP 8.2+:** Use typed properties, return type declarations, parameter types, `readonly` where appropriate, null coalescing, and short array syntax.
-- **JavaScript ES2025+:** Any project-owned JavaScript should target modern ES2025+ syntax and WordPress 6.5+ browser support. Prefer modules where appropriate, `const`/`let`, arrow functions, optional chaining, nullish coalescing, template literals, and native DOM APIs. Avoid legacy `var`, jQuery-first patterns, IIFEs, and transpilation-only syntax unless a WordPress or WP Store Locator integration requires that specific shape.
-- **PHPDoc:** Use `@param`, `@return`, and `@since` tags on all functions and methods.
-- **Naming:** Functions: `snake_case`. Classes: `PascalCase_With_Underscores`. Constants: `UPPER_SNAKE_CASE`. Files: `lowercase-with-hyphens.php`.
-- **Performance:** Avoid N+1 queries. Use WordPress caching (`wp_cache_*()`, transients). Enqueue assets with `wp_enqueue_*()`. Focus on correctness first, then optimize.
-- **Error handling:** Use `WP_Error` for WordPress errors. Log errors without exposing sensitive data. Handle edge cases gracefully.
-- **Unused code:** Flag potentially unused code for review before removing it; WordPress hooks can call code dynamically.
+- This is a WordPress plugin with current minimums of WordPress 6.8 and PHP 8.2. Treat the plugin header, `readme.txt`, `composer.json`, and `phpcs.xml` as the authoritative compatibility surfaces and keep them aligned.
+- Follow the configured WordPress Coding Standards and project PHPCS rules.
+- Use the `Optimizations_Ace_Mc` class family, the `optimizations_ace_mc_` function prefix, and the `OPTIMIZATIONS_ACE_MC_` constant prefix; preserve existing public names.
+- Use the `optimizations-ace-mc` text domain for all translatable strings.
+- Prefer WordPress APIs over raw PHP equivalents when they provide the appropriate behavior.
+- Add PHPDoc, including `@param`, `@return`, and `@since`, consistent with the existing codebase.
+
+## WordPress Security
+
+- Validate and sanitize untrusted input at the trust boundary, and escape output for its specific HTML, attribute, URL, or JavaScript context.
+- Require both nonce verification and an appropriate capability check before state-changing or sensitive operations.
+- Prefer WordPress database APIs; prepare dynamic raw SQL with `$wpdb->prepare()`.
+- Canonicalize and constrain filesystem paths before access, prevent traversal outside approved directories, and use the WordPress Filesystem API where appropriate.
+- Return `WP_Error` where consistent with existing APIs, and do not expose sensitive information in user-facing errors or logs.
 
 ## Internationalization
 
-- **Text domain:** `'optimizations-ace-mc'`
-- Mark all user-facing strings with `__()`, `_e()`, `esc_html__()`, `esc_attr__()`, and related i18n helpers.
-- Update `.pot` language files when adding or modifying translatable strings.
+- Internationalize all user-facing strings with the appropriate WordPress helper and the `optimizations-ace-mc` text domain.
+- Update `languages/optimizations-ace-mc.pot` when translatable strings change, following the repository's existing POT-generation workflow.
 
-## Documentation & Versioning
+## Releases
 
-**Changelogs:**
+- Change version numbers only when explicitly instructed.
+- For a release, keep the plugin header, `OPTIMIZATIONS_ACE_MC_VERSION`, README version badge/download link, `readme.txt` stable tag, changelogs, and POT project version synchronized.
+- Move the Unreleased changelog entries into the released version section.
 
-- Update both CHANGELOG.md and the readme.txt changelog section for every code change, and keep them in sync.
-- Use the "Unreleased" section for ongoing changes.
+## Changelog Updates
 
-**Version releases (only when explicitly instructed):**
+- When updating the main plugin codebase, update both `CHANGELOG.md` and the changelog section in `readme.txt` in the same change.
+- Avoid changelog updates for changes limited to `.github/`, `tests/`, `stubs/`, `.private/`, or `languages/`.
 
-- Semantic versioning: MAJOR.MINOR.PATCH
-- Update version in: plugin header, README.md, readme.txt, CHANGELOG.md, GEMINI.md, `.pot` files, constants, composer.json
-- Move "Unreleased" changes to the new version section.
-- **Never auto-update versions.**
+## Repo Hygiene
 
-## CI/CD & Workflows
-
-- GitHub Actions workflows live in `.github/workflows/`.
-- **Gemini AI integration:** Code review and issue analysis via Google Gemini API. Sanitize all user-controlled content (diffs, issue bodies) before passing it to LLM prompts.
-- **Static analysis:** PHPStan (Level 5+), PHPCS (WordPress standards), PHPMD, Psalm
-- **Test matrix:** PHP 8.2, 8.3, 8.4, 8.5 x WordPress 6.8, latest, nightly
-- **Security:** Never expose API keys or tokens in logs. Use `${{ secrets.* }}` for credentials. Add timeouts to external API calls. Fail builds on critical security findings.
-- **Error handling in workflows:** Do not suppress tool failures with `|| echo`. Log full output and set appropriate exit codes.
-
-## Workflow Rules
-
-- Edit files in place. Create new files only when architecturally necessary.
-- Proceed automatically unless an action is destructive or irreversible.
-- Auto-identify and fix bugs. Ask for confirmation only before data loss or deletion.
-- Provide concise, actionable responses. Never create separate summary `.md` files.
+- Respect uncommitted user changes. Do not revert unrelated edits.
+- Do not commit generated caches, dependency folders, coverage reports, or tool output unless the repo already tracks them.
+- If a global tool reports that project-local configuration is missing, either use a conservative command-line fallback or add config only when it improves repeatable repo workflows.

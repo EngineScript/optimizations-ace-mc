@@ -15,7 +15,7 @@ A lightweight WordPress optimization plugin with configurable performance enhanc
 - **WP Store Locator**: Display store categories in info windows and disable the REST API endpoint
 - **WordPress Admin**: Add a sortable user registration date column
 
-All features are individually configurable via **Settings > Optimizations ACE MC**.
+All features are individually configurable via **Settings > ACE MC Optimizations**.
 
 ## Structure
 
@@ -29,7 +29,7 @@ The main plugin file bootstraps focused classes from `includes/`:
 
 1. Upload the plugin to `/wp-content/plugins/optimizations-ace-mc`.
 2. Activate it from the WordPress Plugins screen.
-3. Configure it at **Settings > Optimizations ACE MC**.
+3. Configure it at **Settings > ACE MC Optimizations**.
 
 ## License
 

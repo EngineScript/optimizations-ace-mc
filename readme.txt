@@ -17,9 +17,9 @@ Optimizations ACE MC is a WordPress optimization plugin that provides configurab
 = Features =
 
 **WooCommerce Optimizations:**
-* Show empty product categories in archives (configurable)
-* Hide category product counts in product archives (configurable)
-* Add a user order count column to the admin users table with sorting (configurable)
+* Show empty product categories in classic shop and category archives (configurable)
+* Hide category product counts in classic shop and category archives (configurable)
+* Add a user order count column (all order statuses) to the admin users table (configurable)
 
 **WP Store Locator Optimizations:**
 * Display store categories in store info windows (configurable)
@@ -44,18 +44,18 @@ Optimizations ACE MC is a WordPress optimization plugin that provides configurab
 
 1. Upload the plugin files to the `/wp-content/plugins/optimizations-ace-mc` directory, or install the plugin through the WordPress Plugins screen.
 2. Activate the plugin through the "Plugins" screen in WordPress.
-3. Navigate to **Settings > Optimizations ACE MC** to configure which optimization features you want to enable.
+3. Navigate to **Settings > ACE MC Optimizations** to configure which optimization features you want to enable.
 4. Enable or disable individual optimizations based on your site's needs and available plugins.
 
 == Frequently Asked Questions ==
 
 = Do I need to configure anything? =
 
-All features are disabled by default. Navigate to **Settings > Optimizations ACE MC** to enable the optimizations you need. Each feature can be individually enabled or disabled.
+All features are disabled by default. Navigate to **Settings > ACE MC Optimizations** to enable the optimizations you need. Each feature can be individually enabled or disabled.
 
 = What happens if I don't have WooCommerce or WP Store Locator installed? =
 
-WooCommerce and WP Store Locator are required dependencies for this plugin. Keep both plugins active before enabling their related optimization settings.
+WooCommerce and WP Store Locator are required. WordPress will not activate this plugin unless both are installed and active, and while this plugin is active WordPress prevents deactivating them from the Plugins screen.
 
 = Will this plugin slow down my site? =
 

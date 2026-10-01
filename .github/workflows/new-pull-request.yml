@@ -38,7 +38,7 @@ jobs:
             - [ ] Did you update the CHANGELOG.md if needed?
 
             **Security Reminder**
-            This plugin adjusts WooCommerce, WP Store Locator, and WordPress admin behavior, so please ensure:
+            This plugin creates site export archives, so please ensure:
             - All user input is properly sanitized
             - All output is properly escaped
             - No security vulnerabilities are introduced

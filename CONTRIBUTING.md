@@ -137,7 +137,7 @@ function optimizations_ace_mc_example_function( string $input ): string {
 
    - Test with WordPress 6.8 or higher.
    - Test with PHP 8.2 or higher.
-   - Verify the settings screen at **Settings > Optimizations ACE MC**.
+   - Verify the settings screen at **Settings > ACE MC Optimizations**.
    - Verify WooCommerce user order count behavior when enabled.
    - Verify WP Store Locator category display and REST API behavior when enabled.
    - Verify the WordPress user registration date column when enabled.

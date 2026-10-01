@@ -61,9 +61,10 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	 * @since 1.0.9
 	 */
 	public function add_admin_menu(): void {
+		// Core prints the menu title without escaping, so escape both titles here.
 		$this->settings_page_hook = (string) add_options_page(
-			__( 'ACE MC Optimizations', 'optimizations-ace-mc' ),
-			__( 'ACE MC Optimizations', 'optimizations-ace-mc' ),
+			esc_html__( 'ACE MC Optimizations', 'optimizations-ace-mc' ),
+			esc_html__( 'ACE MC Optimizations', 'optimizations-ace-mc' ),
 			'manage_options',
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG,
 			array( $this, 'render' )
@@ -118,14 +119,14 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	private function register_woocommerce_settings(): void {
 		add_settings_section(
 			'woocommerce_section',
-			__( 'WooCommerce Optimizations', 'optimizations-ace-mc' ),
+			esc_html__( 'WooCommerce Optimizations', 'optimizations-ace-mc' ),
 			array( $this, 'woocommerce_section_callback' ),
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG
 		);
 
-		$this->add_checkbox_field( 'woocommerce_show_empty_categories', __( 'Show Empty Categories', 'optimizations-ace-mc' ), 'woocommerce_section' );
-		$this->add_checkbox_field( 'woocommerce_hide_category_count', __( 'Hide Category Product Count', 'optimizations-ace-mc' ), 'woocommerce_section' );
-		$this->add_checkbox_field( 'woocommerce_user_order_count_column', __( 'User Order Count Column', 'optimizations-ace-mc' ), 'woocommerce_section' );
+		$this->add_checkbox_field( 'woocommerce_show_empty_categories', esc_html__( 'Show Empty Categories', 'optimizations-ace-mc' ), 'woocommerce_section' );
+		$this->add_checkbox_field( 'woocommerce_hide_category_count', esc_html__( 'Hide Category Product Count', 'optimizations-ace-mc' ), 'woocommerce_section' );
+		$this->add_checkbox_field( 'woocommerce_user_order_count_column', esc_html__( 'User Order Count Column', 'optimizations-ace-mc' ), 'woocommerce_section' );
 	}
 
 	/**
@@ -136,13 +137,13 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	private function register_wpsl_settings(): void {
 		add_settings_section(
 			'wpsl_section',
-			__( 'WP Store Locator Optimizations', 'optimizations-ace-mc' ),
+			esc_html__( 'WP Store Locator Optimizations', 'optimizations-ace-mc' ),
 			array( $this, 'wpsl_section_callback' ),
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG
 		);
 
-		$this->add_checkbox_field( 'wpsl_show_store_categories', __( 'Show Store Categories', 'optimizations-ace-mc' ), 'wpsl_section' );
-		$this->add_checkbox_field( 'wpsl_disable_rest_api', __( 'Disable REST API', 'optimizations-ace-mc' ), 'wpsl_section' );
+		$this->add_checkbox_field( 'wpsl_show_store_categories', esc_html__( 'Show Store Categories', 'optimizations-ace-mc' ), 'wpsl_section' );
+		$this->add_checkbox_field( 'wpsl_disable_rest_api', esc_html__( 'Disable REST API', 'optimizations-ace-mc' ), 'wpsl_section' );
 	}
 
 	/**
@@ -153,12 +154,12 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	private function register_admin_settings(): void {
 		add_settings_section(
 			'admin_section',
-			__( 'WordPress Admin Optimizations', 'optimizations-ace-mc' ),
+			esc_html__( 'WordPress Admin Optimizations', 'optimizations-ace-mc' ),
 			array( $this, 'admin_section_callback' ),
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG
 		);
 
-		$this->add_checkbox_field( 'admin_user_registration_date_column', __( 'User Registration Date Column', 'optimizations-ace-mc' ), 'admin_section' );
+		$this->add_checkbox_field( 'admin_user_registration_date_column', esc_html__( 'User Registration Date Column', 'optimizations-ace-mc' ), 'admin_section' );
 	}
 
 	/**
@@ -212,6 +213,9 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	/**
 	 * Checkbox field callback.
 	 *
+	 * Core labels the checkbox with the field title (via `label_for`), so the
+	 * description is linked with `aria-describedby` rather than a second label.
+	 *
 	 * @since 1.0.9
 	 * @param array{label_for?:string} $args Field arguments.
 	 */
@@ -225,10 +229,8 @@ final class Optimizations_Ace_Mc_Admin_Page {
 		$checked     = $this->settings->is_enabled( $name );
 
 		printf(
-			'<label for="%1$s">
-				<input type="checkbox" id="%1$s" name="%2$s[%1$s]" value="1" %3$s />
-				%4$s
-			</label>',
+			'<input type="checkbox" id="%1$s" name="%2$s[%1$s]" value="1" aria-describedby="%1$s-description" %3$s />
+			<p class="description" id="%1$s-description">%4$s</p>',
 			esc_attr( $name ),
 			esc_attr( Optimizations_Ace_Mc_Settings::OPTION_NAME ),
 			checked( $checked, true, false ),
@@ -250,7 +252,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 		<div class="wrap optimizations-ace-mc-wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
-			<?php settings_errors(); ?>
+			<?php // Core prints settings notices for pages under Settings (options-head.php). ?>
 			<?php $this->display_plugin_info(); ?>
 
 			<form method="post" action="options.php">
@@ -273,15 +275,14 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	 */
 	private function display_plugin_info(): void {
 		?>
-		<div class="notice notice-info">
+		<?php // "inline" keeps core's common.js from moving this box to the top of the page like an admin notice. ?>
+		<div class="notice notice-info inline">
 			<p>
 				<strong><?php esc_html_e( 'Plugin Information:', 'optimizations-ace-mc' ); ?></strong>
 				<?php esc_html_e( 'This plugin provides configurable optimizations for WooCommerce, WP Store Locator, and WordPress admin interfaces.', 'optimizations-ace-mc' ); ?>
 			</p>
 			<p>
-				<strong><?php esc_html_e( 'Version:', 'optimizations-ace-mc' ); ?></strong> <?php echo esc_html( OPTIMIZATIONS_ACE_MC_VERSION ); ?> |
-				<strong><?php esc_html_e( 'WordPress:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '6.8+ required', 'optimizations-ace-mc' ); ?> |
-				<strong><?php esc_html_e( 'PHP:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '8.2+ required', 'optimizations-ace-mc' ); ?>
+				<strong><?php esc_html_e( 'Version:', 'optimizations-ace-mc' ); ?></strong> <?php echo esc_html( OPTIMIZATIONS_ACE_MC_VERSION ); ?>
 			</p>
 		</div>
 		<?php
@@ -300,6 +301,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 				<?php esc_html_e( 'For support, bug reports, or feature requests:', 'optimizations-ace-mc' ); ?>
 				<a href="https://github.com/EngineScript/optimizations-ace-mc" target="_blank" rel="noopener noreferrer">
 					<?php esc_html_e( 'Visit the GitHub repository', 'optimizations-ace-mc' ); ?>
+					<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'optimizations-ace-mc' ); ?></span>
 				</a>
 			</p>
 		</div>

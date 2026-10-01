@@ -55,6 +55,17 @@ final class Optimizations_Ace_Mc_Settings {
 	}
 
 	/**
+	 * Delete the stored settings when the plugin is deleted.
+	 *
+	 * Registered with register_uninstall_hook(), which only accepts static callbacks.
+	 *
+	 * @since 1.6.0
+	 */
+	public static function uninstall(): void {
+		delete_option( self::OPTION_NAME );
+	}
+
+	/**
 	 * Reload settings from the database.
 	 *
 	 * @since 1.0.9
@@ -99,11 +110,18 @@ final class Optimizations_Ace_Mc_Settings {
 	/**
 	 * Sanitize settings.
 	 *
+	 * Core passes null when every checkbox is cleared, so any non-array input
+	 * is treated as an empty submission.
+	 *
 	 * @since 1.0.9
-	 * @param array<string, mixed> $input Raw input data.
+	 * @param mixed $input Raw input data.
 	 * @return array<string, bool> Sanitized settings.
 	 */
-	public function sanitize_settings( array $input ): array {
+	public function sanitize_settings( mixed $input ): array {
+		if ( ! is_array( $input ) ) {
+			$input = [];
+		}
+
 		$sanitized = [];
 
 		foreach ( array_keys( self::DEFAULT_SETTINGS ) as $key ) {
@@ -124,9 +142,9 @@ final class Optimizations_Ace_Mc_Settings {
 	 */
 	public function get_field_description( string $name ): string {
 		return match ( $name ) {
-			'woocommerce_show_empty_categories' => __( 'Show empty product categories in WooCommerce category listings.', 'optimizations-ace-mc' ),
-			'woocommerce_hide_category_count' => __( 'Hide the product count numbers in category listings.', 'optimizations-ace-mc' ),
-			'woocommerce_user_order_count_column' => __( 'Add an order count column to the WordPress users admin table.', 'optimizations-ace-mc' ),
+			'woocommerce_show_empty_categories' => __( 'Show empty product categories when WooCommerce lists subcategories on classic shop and category pages.', 'optimizations-ace-mc' ),
+			'woocommerce_hide_category_count' => __( 'Hide the product count next to category names when WooCommerce lists subcategories on classic shop and category pages.', 'optimizations-ace-mc' ),
+			'woocommerce_user_order_count_column' => __( 'Add a column to the WordPress users admin table showing the total number of WooCommerce orders for each user, across all order statuses.', 'optimizations-ace-mc' ),
 			'wpsl_show_store_categories' => __( 'Display store categories in the store locator info windows.', 'optimizations-ace-mc' ),
 			'wpsl_disable_rest_api' => __( 'Disable the REST API endpoint for the WP Store Locator post type for security.', 'optimizations-ace-mc' ),
 			'admin_user_registration_date_column' => __( 'Add a registration date column to the WordPress users admin table.', 'optimizations-ace-mc' ),

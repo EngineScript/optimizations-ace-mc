@@ -64,4 +64,25 @@ final class SettingsSanitizationTest extends TestCase {
 		);
 		self::assertArrayNotHasKey( 'unknown_option', $result );
 	}
+
+	/**
+	 * Core passes null when every checkbox is cleared; any non-array input saves all settings off.
+	 */
+	public function test_sanitize_settings_treats_non_array_input_as_all_off(): void {
+		$settings = new Optimizations_Ace_Mc_Settings();
+
+		foreach ( [ null, '', 'x', 0, 1.5, true ] as $input ) {
+			self::assertSame( array_fill_keys( array_keys( $settings->defaults() ), false ), $settings->sanitize_settings( $input ) );
+		}
+	}
+
+	/**
+	 * Every setting must default to off (unchecked).
+	 */
+	public function test_every_setting_defaults_off(): void {
+		$settings = new Optimizations_Ace_Mc_Settings();
+
+		self::assertCount( 6, $settings->defaults() );
+		self::assertSame( [], array_filter( $settings->defaults() ) );
+	}
 }

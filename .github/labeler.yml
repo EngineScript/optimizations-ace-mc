@@ -1,27 +1,26 @@
 # Configuration for GitHub Actions Labeler
-# This file defines how automatic labels are applied to pull requests based on the files changed.
-# It helps categorize PRs by change type (core functionality, frontend, documentation, etc.)
-# and makes it easier to identify what areas of the plugin are being modified.
-# The labels are applied automatically by the issue-management.yml workflow.
+# Labels PRs based on changed file paths
 
 # Core plugin functionality
 core:
   - changed-files:
     - any-glob-to-any-file: optimizations-ace-mc.php
+    - any-glob-to-any-file: includes/**/*
     - any-glob-to-any-file: assets/js/**/*
 
-# Frontend-related changes
+# Frontend related changes
 frontend:
   - changed-files:
     - any-glob-to-any-file: assets/css/**/*
     - any-glob-to-any-file: assets/images/**/*
+    - any-glob-to-any-file: templates/**/*
 
 # Workflows and automation
 automation:
   - changed-files:
     - any-glob-to-any-file: .github/**/*
 
-# Security-related changes
+# Security related changes
 security:
   - changed-files:
     - any-glob-to-any-file: '**/*.php'
@@ -32,13 +31,12 @@ documentation:
   - changed-files:
     - any-glob-to-any-file: README.md
     - any-glob-to-any-file: '*.md'
+    - any-glob-to-any-file: docs/**/*
 
 # Optimization functionality
-optimization:
+optimizations:
   - changed-files:
-    - any-glob-to-any-file: '**/optimi*.php'
-    - any-glob-to-any-file: '**/cache*.php'
-    - any-glob-to-any-file: '**/performance*.php'
+    - any-glob-to-any-file: 'includes/class-optimizations-ace-mc-*-optimizations.php'
 
 # Database related changes
 database:
@@ -52,7 +50,6 @@ wordpress:
   - changed-files:
     - any-glob-to-any-file: '**/wp-*.php'
     - any-glob-to-any-file: '**/wordpress*.php'
-    - any-glob-to-any-file: '**/admin*.php'
 
 # Translations and localization
 i18n:
@@ -76,4 +73,5 @@ testing:
   - changed-files:
     - any-glob-to-any-file: tests/**/*
     - any-glob-to-any-file: phpunit.xml
-    - any-glob-to-any-file: phpcs.xml
+    - any-glob-to-any-file: .travis.yml
+    - any-glob-to-any-file: .phpcs.xml

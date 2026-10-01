@@ -17,18 +17,3 @@
 .optimizations-ace-mc-card h2 {
 	margin-top: 0;
 }
-
-.optimizations-ace-mc-wrap .form-table th {
-	width: 200px;
-}
-
-.optimizations-ace-mc-wrap .form-table td label {
-	display: flex;
-	align-items: flex-start;
-	gap: 10px;
-}
-
-.optimizations-ace-mc-wrap .form-table td label input[type="checkbox"] {
-	margin-top: 2px;
-	flex-shrink: 0;
-}

@@ -62,11 +62,17 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	/**
 	 * Add registration date column to users table.
 	 *
+	 * Other plugins share this filter, so a non-array value is passed through unchanged.
+	 *
 	 * @since 1.0.9
-	 * @param array<string, string> $columns Existing columns.
-	 * @return array<string, string>
+	 * @param mixed $columns Existing columns.
+	 * @return mixed
 	 */
-	public function add_user_registration_date_column( array $columns ): array {
+	public function add_user_registration_date_column( mixed $columns ): mixed {
+		if ( ! is_array( $columns ) ) {
+			return $columns;
+		}
+
 		$columns['registration_date'] = __( 'Registration Date', 'optimizations-ace-mc' );
 
 		return $columns;
@@ -76,38 +82,69 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 * Display registration date in users table.
 	 *
 	 * @since 1.0.9
-	 * @param string $output Custom column output.
+	 * @param mixed  $output Custom column output from earlier callbacks.
 	 * @param string $column_name Name of the column.
 	 * @param int    $user_id User ID.
-	 * @return string
+	 * @return mixed
 	 */
-	public function display_user_registration_date_column( string $output, string $column_name, int $user_id ): string {
+	public function display_user_registration_date_column( mixed $output, string $column_name, int $user_id ): mixed {
 		if ( 'registration_date' !== $column_name ) {
 			return $output;
 		}
 
-		$user = get_userdata( absint( $user_id ) );
-		if ( false === $user || '' === $user->user_registered ) {
-			return esc_html__( 'Unknown', 'optimizations-ace-mc' );
-		}
+		$date = $this->get_registration_date( $user_id );
 
-		if ( '' === $this->date_format ) {
-			$this->date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
-		}
-
-		return esc_html( get_date_from_gmt( $user->user_registered, $this->date_format ) );
+		return esc_html( false === $date ? __( 'Unknown', 'optimizations-ace-mc' ) : $date );
 	}
 
 	/**
 	 * Make registration date column sortable.
 	 *
 	 * @since 1.0.9
-	 * @param array<string, string> $columns Sortable columns.
-	 * @return array<string, string>
+	 * @param mixed $columns Sortable columns.
+	 * @return mixed
 	 */
-	public function make_user_registration_date_sortable( array $columns ): array {
+	public function make_user_registration_date_sortable( mixed $columns ): mixed {
+		if ( ! is_array( $columns ) ) {
+			return $columns;
+		}
+
 		$columns['registration_date'] = 'registered';
 
 		return $columns;
+	}
+
+	/**
+	 * Format a user's registration date in the site's date format, time zone, and language.
+	 *
+	 * @since 1.6.0
+	 * @param int $user_id User ID.
+	 * @return string|false Formatted date, or false when the date is missing or invalid.
+	 */
+	private function get_registration_date( int $user_id ): string|false {
+		$user = get_userdata( $user_id );
+		if ( false === $user ) {
+			return false;
+		}
+
+		// MySQL's zero date parses to year -1 instead of failing, so reject it explicitly.
+		$registered = $user->user_registered;
+		if ( '' === $registered || '0000-00-00 00:00:00' === $registered ) {
+			return false;
+		}
+
+		// WordPress runs PHP in UTC, so this reads the stored GMT value correctly.
+		$timestamp = strtotime( $registered );
+		if ( false === $timestamp ) {
+			return false;
+		}
+
+		if ( '' === $this->date_format ) {
+			$date_format       = get_option( 'date_format' );
+			$time_format       = get_option( 'time_format' );
+			$this->date_format = ( is_string( $date_format ) ? $date_format : '' ) . ' ' . ( is_string( $time_format ) ? $time_format : '' );
+		}
+
+		return wp_date( $this->date_format, $timestamp );
 	}
 }

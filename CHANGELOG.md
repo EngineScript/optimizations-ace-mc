@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Declared `Requires Plugins: woocommerce, wp-store-locator` so WordPress enforces both dependencies at activation
+- Deleted the plugin's settings option when the plugin is deleted, using WordPress's uninstall hook
+
+### Changed
+
+- Registration dates in the users table now follow the site's language for month and day names (`wp_date()`)
+- Unserializing the plugin coordinator now throws a `LogicException` instead of only logging a notice
+- WooCommerce setting descriptions now state that the category options apply to classic shop and category pages, and that the order count includes all order statuses
+- Removed the hard-coded WordPress and PHP requirement text from the settings page; WordPress enforces and displays the plugin's requirements
+- The support link on the settings page announces that it opens in a new tab to screen reader users
+- Documentation now points to the actual settings location, **Settings > ACE MC Optimizations**, and explains that WordPress enforces the WooCommerce and WP Store Locator dependencies
+- Regenerated the translation template (`languages/optimizations-ace-mc.pot`)
+
+### Fixed
+
+- Saving the settings page with every checkbox cleared no longer causes a fatal error
+- The users table no longer fails when WooCommerce is inactive while the order count column is enabled
+- Users with an empty registration date (`0000-00-00 00:00:00`) now show "Unknown" instead of a year -1 date
+- Users-table and post-type callbacks pass through unexpected values from other plugins instead of causing a fatal error
+- The settings page shows "Settings saved." once instead of twice
+- Each settings checkbox now has a single label (its title), with the description linked as an accessible description
+- Settings menu, page, section, and field titles are escaped before WordPress prints them
+- The plugin information box on the settings page stays in place instead of being moved to the top like an admin notice
+- On small screens, the settings table now stacks field titles full width as in the rest of WordPress admin
+
+### Removed
+
+- Removed the `load_plugin_textdomain()` call; WordPress loads translations from `wp-content/languages/plugins` automatically
+- Removed the unused `OPTIMIZATIONS_ACE_MC_PLUGIN_DIR` and `OPTIMIZATIONS_ACE_MC_PLUGIN_URL` constants and the unused `Optimizations_Ace_Mc::settings()` accessor
+
+### CI/CD
+
+- Replaced the inherited generated PHPUnit suite with integration tests for this plugin (settings save, defaults, hook registration, WooCommerce guard, date column, uninstall, markup)
+- Fixed the Plugin Check and release package steps to copy `assets/` instead of nonexistent `css/` and `js/` directories
+- Removed the nonexistent `js` path from translation template generation
+- Fixed PHPMD path exclusions in CI and `composer phpmd`; a command-line exclude replaces the ruleset's exclude patterns
+- Tightened analyzer configuration: PHPStan level 8, default PHPMD size and complexity limits, and restored PHPMD clean-code and design rules; removed unused stubs and exclusions
+
 ## [1.5.0] - 2026-05-18
 
 ### Changed

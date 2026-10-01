@@ -117,11 +117,17 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	/**
 	 * Disable REST API for WP Store Locator post type.
 	 *
+	 * Other plugins can filter these arguments first, so a non-array value is passed through unchanged.
+	 *
 	 * @since 1.0.9
-	 * @param array<string, mixed> $args Post type arguments.
-	 * @return array<string, mixed>
+	 * @param mixed $args Post type arguments.
+	 * @return mixed
 	 */
-	public function disable_store_locator_rest_api( array $args ): array {
+	public function disable_store_locator_rest_api( mixed $args ): mixed {
+		if ( ! is_array( $args ) ) {
+			return $args;
+		}
+
 		$args['show_in_rest'] = false;
 
 		return $args;

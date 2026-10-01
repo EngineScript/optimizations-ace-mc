@@ -13,6 +13,7 @@
  * Requires at least: 6.8
  * Tested up to: 7.0
  * Requires PHP: 8.2
+ * Requires Plugins: woocommerce, wp-store-locator
  *
  * @package OptimizationsAceMc
  */
@@ -25,8 +26,6 @@ if ( ! defined( 'WPINC' ) ) {
 // Define plugin constants.
 define( 'OPTIMIZATIONS_ACE_MC_VERSION', '1.5.0' );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_FILE', __FILE__ );
-define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once __DIR__ . '/includes/class-optimizations-ace-mc-settings.php';
 require_once __DIR__ . '/includes/class-optimizations-ace-mc-admin-page.php';
@@ -35,8 +34,16 @@ require_once __DIR__ . '/includes/class-optimizations-ace-mc-wpsl-optimizations.
 require_once __DIR__ . '/includes/class-optimizations-ace-mc-admin-optimizations.php';
 require_once __DIR__ . '/includes/class-optimizations-ace-mc.php';
 
+// Delete the plugin's settings when it is deleted. Registered on every load so
+// existing installs pick it up after an update; core only writes when it changes.
+// Skipped while core is uninstalling, because core includes this file after
+// removing the registration and would otherwise have it re-added.
+if ( ! did_action( 'pre_uninstall_plugin' ) ) {
+	register_uninstall_hook( __FILE__, array( 'Optimizations_Ace_Mc_Settings', 'uninstall' ) );
+}
+
 /**
- * Initialize the plugin.
+ * Get the plugin coordinator instance.
  *
  * @since 1.0.0
  * @return Optimizations_Ace_Mc
