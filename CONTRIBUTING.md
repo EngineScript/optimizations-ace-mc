@@ -227,7 +227,7 @@ This project follows [Semantic Versioning](https://semver.org/):
 
 - **Issues**: [GitHub Issues](https://github.com/EngineScript/optimizations-ace-mc/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/EngineScript/optimizations-ace-mc/discussions)
-- **Security**: Email [security@enginescript.com](mailto:security@enginescript.com) for security issues
+- **Security**: Report security issues privately through the [vulnerability report form](https://github.com/EngineScript/optimizations-ace-mc/security/advisories/new); see [SECURITY.md](SECURITY.md)
 
 ## Resources
 
