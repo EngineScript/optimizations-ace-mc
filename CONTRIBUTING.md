@@ -11,9 +11,9 @@ This project follows the [WordPress Community Code of Conduct](https://make.word
 ### Requirements
 
 - **PHP**: 8.2 or higher
-- **WordPress**: 6.8 or higher
+- **WordPress**: 7.0 or higher
 - **WooCommerce**: Required for WooCommerce-specific optimization behavior
-- **WP Store Locator**: Required for store locator optimization behavior
+- **WP Store Locator**: Optional; only needed for store locator optimization behavior
 - **Composer**: For dependency management and quality tools
 - **Git**: For version control
 
@@ -135,7 +135,7 @@ function optimizations_ace_mc_example_function( string $input ): string {
 
 1. **Manual testing**:
 
-   - Test with WordPress 6.8 or higher.
+   - Test with WordPress 7.0 or higher.
    - Test with PHP 8.2 or higher.
    - Verify the settings screen at **Settings > ACE MC Optimizations**.
    - Verify WooCommerce user order count behavior when enabled.

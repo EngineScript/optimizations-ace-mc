@@ -9,17 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Declared `Requires Plugins: woocommerce, wp-store-locator` so WordPress enforces both dependencies at activation
+- Declared `Requires Plugins: woocommerce` so WordPress enforces the WooCommerce dependency at activation; WP Store Locator stays optional because not every site that runs this plugin uses it
 - Deleted the plugin's settings option when the plugin is deleted, using WordPress's uninstall hook
 
 ### Changed
 
+- Raised the minimum WordPress version to 7.0 (current WooCommerce requires WordPress 7.0); the CI matrix now tests WordPress 7.0, latest, and nightly
 - Registration dates in the users table now follow the site's language for month and day names (`wp_date()`)
 - Unserializing the plugin coordinator now throws a `LogicException` instead of only logging a notice
 - WooCommerce setting descriptions now state that the category options apply to classic shop and category pages, and that the order count includes all order statuses
 - Removed the hard-coded WordPress and PHP requirement text from the settings page; WordPress enforces and displays the plugin's requirements
 - The support link on the settings page announces that it opens in a new tab to screen reader users
-- Documentation now points to the actual settings location, **Settings > ACE MC Optimizations**, and explains that WordPress enforces the WooCommerce and WP Store Locator dependencies
+- Documentation now points to the actual settings location, **Settings > ACE MC Optimizations**, and explains that WordPress enforces the WooCommerce dependency and that WP Store Locator is optional
 - Regenerated the translation template (`languages/optimizations-ace-mc.pot`)
 
 ### Fixed

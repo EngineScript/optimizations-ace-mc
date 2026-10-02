@@ -1,13 +1,15 @@
 # Optimizations ACE MC
 
+[![Version](https://img.shields.io/badge/Version-1.5.0-orange.svg?logo=github)](https://github.com/EngineScript/optimizations-ace-mc/releases/latest/download/optimizations-ace-mc-1.5.0.zip)
+
 A lightweight WordPress optimization plugin with configurable performance enhancements for WooCommerce, WP Store Locator, and WordPress admin interfaces.
 
 ## Requirements
 
-- WordPress 6.8+
+- WordPress 7.0+
 - PHP 8.2+
-- WooCommerce 5.0+
-- WP Store Locator
+- WooCommerce (required; WordPress will not activate this plugin without it)
+- WP Store Locator (optional; only needed for the store locator options)
 
 ## Features
 

@@ -38,7 +38,7 @@ applyTo: '**'
 
 ## Project Standards
 
-- This is a WordPress plugin with current minimums of WordPress 6.8 and PHP 8.2. Treat the plugin header, `readme.txt`, `composer.json`, and `phpcs.xml` as the authoritative compatibility surfaces and keep them aligned.
+- This is a WordPress plugin with current minimums of WordPress 7.0 and PHP 8.2. Treat the plugin header, `readme.txt`, `composer.json`, and `phpcs.xml` as the authoritative compatibility surfaces and keep them aligned.
 - Follow the configured WordPress Coding Standards and project PHPCS rules.
 - Use the `Optimizations_Ace_Mc` class family, the `optimizations_ace_mc_` function prefix, and the `OPTIMIZATIONS_ACE_MC_` constant prefix; preserve existing public names.
 - Use the `optimizations-ace-mc` text domain for all translatable strings.

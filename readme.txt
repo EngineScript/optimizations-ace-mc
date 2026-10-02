@@ -1,7 +1,7 @@
 === Optimizations ACE MC ===
 Contributors: EngineScript
 Tags: optimization, performance, wp-optimizer, speed, seo
-Requires at least: 6.8
+Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.2
 Stable tag: 1.5.0
@@ -35,10 +35,10 @@ Optimizations ACE MC is a WordPress optimization plugin that provides configurab
 
 = Requirements =
 
-* WordPress 6.8 or higher
+* WordPress 7.0 or higher
 * PHP 8.2 or higher
-* WooCommerce 5.0+ (required - must be active)
-* WP Store Locator (required - must be active)
+* WooCommerce (required - must be active)
+* WP Store Locator (optional - only needed for the store locator options)
 
 == Installation ==
 
@@ -55,7 +55,7 @@ All features are disabled by default. Navigate to **Settings > ACE MC Optimizati
 
 = What happens if I don't have WooCommerce or WP Store Locator installed? =
 
-WooCommerce and WP Store Locator are required. WordPress will not activate this plugin unless both are installed and active, and while this plugin is active WordPress prevents deactivating them from the Plugins screen.
+WooCommerce is required. WordPress will not activate this plugin unless WooCommerce is installed and active, and while this plugin is active WordPress prevents deactivating WooCommerce from the Plugins screen. WP Store Locator is optional: without it, the two store locator options have no effect.
 
 = Will this plugin slow down my site? =
 
