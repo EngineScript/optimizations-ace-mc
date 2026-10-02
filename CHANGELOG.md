@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-01
+
 ### Added
 
 - Declared `Requires Plugins: woocommerce` so WordPress enforces the WooCommerce dependency at activation; WP Store Locator stays optional because not every site that runs this plugin uses it

@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.5.0
+Stable tag: 1.6.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -66,6 +66,26 @@ No, this plugin is designed to improve performance by adding useful admin enhanc
 Yes, this plugin focuses on specific admin and functionality enhancements rather than general optimization, so it should work alongside other optimization plugins.
 
 == Changelog ==
+
+= 1.6.0 - 2026-10-01 =
+* Added: `Requires Plugins: woocommerce` header so WordPress enforces the WooCommerce dependency; WP Store Locator is optional
+* Added: The plugin's settings option is deleted when the plugin is deleted
+* Changed: Raised minimum WordPress version to 7.0
+* Changed: Registration dates in the users table follow the site's language
+* Changed: Setting descriptions state that the category options apply to classic shop and category pages, and that the order count includes all order statuses
+* Changed: Removed the hard-coded WordPress and PHP requirement text from the settings page
+* Changed: The support link announces that it opens in a new tab to screen reader users
+* Fixed: Saving the settings page with every checkbox cleared no longer causes a fatal error
+* Fixed: The users table no longer fails when WooCommerce is inactive while the order count column is enabled
+* Fixed: Users with an empty registration date show "Unknown"
+* Fixed: Users-table and post-type callbacks pass through unexpected values from other plugins instead of causing a fatal error
+* Fixed: The settings page shows "Settings saved." once instead of twice
+* Fixed: Each settings checkbox has a single label, with the description linked as an accessible description
+* Fixed: Settings menu, page, section, and field titles are escaped before output
+* Fixed: The plugin information box stays in place on the settings page
+* Fixed: On small screens the settings table stacks field titles full width
+* Removed: The `load_plugin_textdomain()` call; WordPress loads translations automatically
+* Removed: Unused `OPTIMIZATIONS_ACE_MC_PLUGIN_DIR` and `OPTIMIZATIONS_ACE_MC_PLUGIN_URL` constants and the unused settings accessor
 
 = 1.5.0 - 2026-05-18 =
 * Changed: Updated the WordPress compatibility workflow matrix to test PHP 8.2 through 8.5 only
