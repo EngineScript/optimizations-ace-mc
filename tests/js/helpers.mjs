@@ -46,7 +46,7 @@ const optionalPlaceholders = {
 
 /** Stand-ins for the functions WP Store Locator adds to the store data. */
 const templateHelpers = {
-	createInfoWindowActions: ( id ) => `<div class="wpsl-info-actions" data-for="${ id }"></div>`,
+	createInfoWindowActions: () => '<div class="wpsl-info-actions"></div>',
 	formatPhoneNumber: ( number ) => number,
 };
 

@@ -15,6 +15,9 @@
  *   filter.
  * - `cached_store` is store data the filter did not see, as WP Store Locator
  *   keeps it in its cache from before the setting was enabled.
+ * - `markup` holds the category names and the label with markup, as they were
+ *   given to the plugin. A test compares them with the text the info window
+ *   shows.
  *
  * The plugin's hooks are registered the way the plugin registers them, and the
  * filters are applied the way WP Store Locator applies them.
@@ -77,9 +80,14 @@ $oam_test_js_original = '<div data-store-id="<%= id %>" class="wpsl-info-window"
 	. "\t" . '<%= createInfoWindowActions( id, url, typeof permalink !== "undefined" ? permalink : "" ) %>' . "\r\n"
 	. '</div>';
 
+$oam_test_js_markup = array(
+	'names' => array( '<script>alert(1)</script>', '<img src=x onerror=alert(1)>' ),
+	'label' => 'Dealer <b>type</b>:<script>alert(1)</script>',
+);
+
 $GLOBALS['oam_test']['terms'] = array(
 	11 => array( oam_test_js_term( 'Gold Dealer' ), oam_test_js_term( 'Service & Repair' ) ),
-	13 => array( oam_test_js_term( '<script>alert(1)</script>' ), oam_test_js_term( '<img src=x onerror=alert(1)>' ) ),
+	13 => array_map( 'oam_test_js_term', $oam_test_js_markup['names'] ),
 	14 => array( oam_test_js_term( '0' ) ),
 );
 
@@ -100,7 +108,7 @@ $oam_test_js_stores = array(
 
 add_filter(
 	'optimizations_ace_mc_store_category_label',
-	static fn(): string => 'Dealer <b>type</b>:<script>alert(1)</script>'
+	static fn(): string => $oam_test_js_markup['label']
 );
 
 $oam_test_js_markup_label = apply_filters( 'wpsl_info_window_template', $oam_test_js_original );
@@ -112,6 +120,7 @@ echo json_encode(
 		'template_with_markup_label' => $oam_test_js_markup_label,
 		'stores'                     => $oam_test_js_stores,
 		'cached_store'               => oam_test_js_store( 15 ),
+		'markup'                     => $oam_test_js_markup,
 	),
 	JSON_THROW_ON_ERROR
 );

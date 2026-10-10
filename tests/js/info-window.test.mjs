@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { addedPart, compile, infoWindow, rendered } from './helpers.mjs';
 
-const { original, template, stores } = rendered;
+const { original, template, stores, markup } = rendered;
 const added = addedPart( original, template );
 
 /**
@@ -16,7 +16,9 @@ const added = addedPart( original, template );
  * @param {string} html - Markup.
  * @returns {string} The markup to compare.
  */
-const collapsed = ( html ) => html.replace( /\s+/g, ' ' );
+function collapsed( html ) {
+	return html.replace( /\s+/g, ' ' );
+}
 
 test( 'the plugin adds one piece to the template and changes nothing else', () => {
 	assert.notEqual( added, '', 'The filtered template is the original with one piece added.' );
@@ -94,7 +96,8 @@ test( 'markup in a category name is shown as text', () => {
 
 	assert.equal( view.element.querySelectorAll( 'script, img' ).length, 0 );
 	assert.equal( categories.children.length, 0 );
-	assert.equal( categories.textContent, 'Certifications: <script>alert(1)</script>, <img src=x onerror=alert(1)>' );
+	assert.ok( markup.names.every( ( name ) => name.startsWith( '<' ) ), 'The names hold markup.' );
+	assert.equal( categories.textContent, 'Certifications: ' + markup.names.join( ', ' ) );
 } );
 
 test( 'markup in the category label is shown as text', () => {
@@ -103,7 +106,8 @@ test( 'markup in the category label is shown as text', () => {
 
 	assert.equal( view.element.querySelectorAll( 'script, b' ).length, 0 );
 	assert.equal( categories.children.length, 0 );
-	assert.equal( categories.textContent, 'Dealer <b>type</b>:<script>alert(1)</script> Gold Dealer, Service & Repair' );
+	assert.ok( markup.label.includes( '<' ), 'The label holds markup.' );
+	assert.equal( categories.textContent, markup.label + ' Gold Dealer, Service & Repair' );
 } );
 
 test( 'a category named 0 is shown', () => {
