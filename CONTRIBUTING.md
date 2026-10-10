@@ -15,6 +15,7 @@ This project follows the [WordPress Community Code of Conduct](https://make.word
 - **WooCommerce**: Required for WooCommerce-specific optimization behavior
 - **WP Store Locator**: Optional; only needed for store locator optimization behavior
 - **Composer**: For dependency management and quality tools
+- **Node.js**: 22.22.2 or higher, for the JavaScript tests only
 - **Git**: For version control
 
 ### Setup
@@ -31,6 +32,7 @@ This project follows the [WordPress Community Code of Conduct](https://make.word
 
    ```bash
    composer install
+   npm ci
    ```
 
 4. Create a feature branch:
@@ -43,7 +45,7 @@ This project follows the [WordPress Community Code of Conduct](https://make.word
 
 This project follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/) for PHP, JavaScript, CSS, HTML, and accessibility.
 
-Project-owned JavaScript should use modern ES2025+ syntax for the WordPress 6.5+ browser support baseline. Prefer native DOM APIs, `const`/`let`, arrow functions, optional chaining, nullish coalescing, template literals, and modules where appropriate. Use legacy JavaScript patterns only when a WordPress or WP Store Locator integration requires them.
+Project-owned JavaScript should use modern ES2025+ syntax for the WordPress 7.0+ browser support baseline. Prefer native DOM APIs, `const`/`let`, arrow functions, optional chaining, nullish coalescing, template literals, and modules where appropriate. Use legacy JavaScript patterns only when a WordPress or WP Store Locator integration requires them.
 
 ### Key Principles
 
@@ -62,7 +64,16 @@ composer run phpstan
 composer run phpmd
 composer run psalm
 composer test
+npm test
 ```
+
+`composer run check-all` runs the PHP checks in one go.
+
+### Test Layers
+
+- **Unit tests** (`tests/unit`, run by `composer test`): PHPUnit tests that run without WordPress. `tests/bootstrap.php` defines stand-ins for the WordPress, WooCommerce, and WP Store Locator functions the plugin calls.
+- **WordPress integration tests**: the compatibility workflow writes this suite into `tests/integration` on the runner and runs it against real WordPress versions. It is not kept in the repository.
+- **JavaScript tests** (`tests/js`, run by `npm test`): Node.js test runner tests for the piece the plugin adds to WP Store Locator's info window template. `tests/js/render-info-window.php` builds the template and the store data with the plugin's own filters; the tests compile the template with Underscore and read the result with jsdom. PHP must be on the `PATH`.
 
 ## File Structure
 
@@ -79,19 +90,31 @@ optimizations-ace-mc/
 |-- assets/                             # Admin CSS
 |-- languages/                          # Translation template
 |   `-- optimizations-ace-mc.pot
-|-- tests/                              # PHPUnit tests
+|-- tests/
+|   |-- bootstrap.php                   # WordPress stand-ins for the unit tests
+|   |-- OamTestCase.php                 # Base class of the unit tests
+|   |-- unit/                           # PHPUnit unit tests
+|   `-- js/                             # JavaScript tests
 |-- stubs/                              # Static-analysis stubs
 |-- README.md                           # Project documentation
-|-- readme.txt                          # WordPress.org readme
+|-- readme.txt                          # Plugin readme; the only readme in the release package
 |-- CHANGELOG.md                        # Version history
 |-- CONTRIBUTING.md                     # This file
+|-- SECURITY.md                         # Security policy
 |-- LICENSE                             # GPL license
-|-- composer.json                       # PHP dependencies
+|-- composer.json                       # PHP dependencies and check scripts
+|-- package.json                        # JavaScript test dependencies
+|-- package-lock.json                   # Locked JavaScript test dependencies
 |-- phpcs.xml                           # PHPCS configuration
 |-- phpstan.neon                        # PHPStan configuration
 |-- phpmd.xml                           # PHPMD configuration
+|-- psalm.xml                           # Psalm configuration
+|-- phpunit.xml                         # PHPUnit configuration
+|-- .distignore                         # Files left out of the release package
 `-- .github/                            # GitHub workflows and templates
 ```
+
+The release package holds the main plugin file, `readme.txt`, `LICENSE`, `includes/`, `assets/`, and `languages/`. When you add a top-level file or directory, add it to `.distignore` and `.gitattributes` unless it must ship; `.github/scripts/check-plugin-package.py` fails when the package lists disagree.
 
 ## Making Changes
 
@@ -147,7 +170,9 @@ function optimizations_ace_mc_example_function( string $input ): string {
    - Run PHPCS for coding standards.
    - Run PHPStan and Psalm for static analysis.
    - Run PHPMD for code quality checks.
-   - Run PHPUnit tests.
+   - Run the PHPUnit unit tests with `composer test`.
+   - Run the JavaScript tests with `npm test`.
+   - The compatibility workflow on GitHub runs all of these, and the WordPress integration tests, on every push and pull request.
 
 ## Submitting Changes
 
@@ -201,7 +226,7 @@ Use [Conventional Commits](https://conventionalcommits.org/):
 - [ ] Code follows WordPress coding standards
 - [ ] Public functions and methods have useful PHPDoc
 - [ ] Security best practices are implemented
-- [ ] PHPCS, PHPStan, PHPMD, Psalm, and PHPUnit checks pass
+- [ ] PHPCS, PHPStan, PHPMD, Psalm, PHPUnit, and JavaScript test checks pass
 - [ ] Manual testing is complete
 - [ ] Documentation is updated if needed
 - [ ] CHANGELOG.md and readme.txt are updated if behavior changes
@@ -210,10 +235,10 @@ Use [Conventional Commits](https://conventionalcommits.org/):
 
 When releasing new versions, update these files:
 
-- `optimizations-ace-mc.php` plugin header
+- `optimizations-ace-mc.php` plugin header and the `OPTIMIZATIONS_ACE_MC_VERSION` constant
 - `includes/` version-dependent UI copy if needed
-- `README.md`
-- `readme.txt`
+- `README.md`, including the version badge
+- `readme.txt` stable tag and changelog
 - `CHANGELOG.md`
 - `languages/optimizations-ace-mc.pot`
 

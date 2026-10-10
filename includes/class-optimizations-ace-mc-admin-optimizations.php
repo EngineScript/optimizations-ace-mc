@@ -140,11 +140,20 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 		}
 
 		if ( '' === $this->date_format ) {
-			$date_format       = get_option( 'date_format' );
-			$time_format       = get_option( 'time_format' );
-			$this->date_format = ( is_string( $date_format ) ? $date_format : '' ) . ' ' . ( is_string( $time_format ) ? $time_format : '' );
+			$this->date_format = self::text( get_option( 'date_format' ) ) . ' ' . self::text( get_option( 'time_format' ) );
 		}
 
 		return wp_date( $this->date_format, $timestamp );
+	}
+
+	/**
+	 * Read an option value as text; a value of another type is read as empty.
+	 *
+	 * @since 1.6.1
+	 * @param mixed $value Option value.
+	 * @return string
+	 */
+	private static function text( mixed $value ): string {
+		return is_string( $value ) ? $value : '';
 	}
 }

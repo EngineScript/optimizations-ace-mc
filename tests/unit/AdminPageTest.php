@@ -105,6 +105,18 @@ final class AdminPageTest extends Oam_Test_Case {
 	}
 
 	/**
+	 * Before the menu entry exists, or when WordPress could not add it, there is no screen to style.
+	 */
+	public function test_stylesheet_is_not_loaded_without_a_menu_entry(): void {
+		$page = new Optimizations_Ace_Mc_Admin_Page( new Optimizations_Ace_Mc_Settings() );
+
+		$page->enqueue_admin_styles( '' );
+		$page->enqueue_admin_styles( 'settings_page_optimizations-ace-mc' );
+
+		$this->assertSame( array(), $GLOBALS['oam_test']['styles'] );
+	}
+
+	/**
 	 * One option is registered, with the repository's sanitizer and all-off defaults.
 	 */
 	public function test_one_setting_is_registered_with_the_sanitizer(): void {

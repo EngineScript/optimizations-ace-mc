@@ -2,6 +2,7 @@
 * text=auto eol=lf
 
 # Exclude source-only and development tooling from git archive/export packages.
+/.codacy.yml export-ignore
 /.github export-ignore
 /.distignore export-ignore
 /.gitattributes export-ignore
@@ -11,6 +12,8 @@
 /composer.json export-ignore
 /CHANGELOG.md export-ignore
 /CONTRIBUTING.md export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
 /phpcs.xml export-ignore
 /phpmd.xml export-ignore
 /phpstan.neon export-ignore
@@ -21,3 +24,4 @@
 /SECURITY.md export-ignore
 /stubs export-ignore
 /tests export-ignore
+/tslint.json export-ignore

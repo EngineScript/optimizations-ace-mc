@@ -1,0 +1,16 @@
+{
+  "name": "optimizations-ace-mc",
+  "private": true,
+  "description": "Development tooling for Optimizations ACE MC: tests for the store locator info window template.",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=22.22.2"
+  },
+  "scripts": {
+    "test": "node --test \"tests/js/**/*.test.mjs\""
+  },
+  "devDependencies": {
+    "jsdom": "30.1.2",
+    "underscore": "1.13.8"
+  }
+}

@@ -81,11 +81,26 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 			return $store_meta;
 		}
 
-		$term_names          = array_filter( array_filter( wp_list_pluck( $terms, 'name' ) ), 'is_string' );
-		$escaped_term_names  = array_map( 'esc_html', $term_names );
-		$store_meta['terms'] = implode( ', ', $escaped_term_names );
+		// A name that is not text, which only a broken term filter could produce, is left out.
+		$term_names = array_map(
+			static fn( mixed $name ): string => esc_html( self::text( $name ) ),
+			wp_list_pluck( $terms, 'name' )
+		);
+
+		$store_meta['terms'] = implode( ', ', array_filter( $term_names, static fn( string $name ): bool => '' !== $name ) );
 
 		return $store_meta;
+	}
+
+	/**
+	 * Read a value from WordPress or another plugin as text; a value of another type is read as empty.
+	 *
+	 * @since 1.6.1
+	 * @param mixed $value Value.
+	 * @return string
+	 */
+	private static function text( mixed $value ): string {
+		return is_string( $value ) ? $value : '';
 	}
 
 	/**
@@ -116,7 +131,7 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 		 * @since 1.0.9
 		 * @param string $label The category label. Default 'Certifications:'.
 		 */
-		$category_label = apply_filters( 'optimizations_ace_mc_store_category_label', __( 'Certifications:', 'optimizations-ace-mc' ) );
+		$category_label = self::text( apply_filters( 'optimizations_ace_mc_store_category_label', __( 'Certifications:', 'optimizations-ace-mc' ) ) );
 
 		// The category text is escaped where it is built, in add_store_categories_to_meta(),
 		// so the template prints it as it is, the way WP Store Locator prints its own markup.

@@ -132,27 +132,27 @@ msgstr ""
 msgid "(opens in a new tab)"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-settings.php:145
+#: includes/class-optimizations-ace-mc-settings.php:154
 msgid "Show empty product categories when WooCommerce lists subcategories on classic shop and category pages."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-settings.php:146
+#: includes/class-optimizations-ace-mc-settings.php:155
 msgid "Hide the product count next to category names when WooCommerce lists subcategories on classic shop and category pages."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-settings.php:147
+#: includes/class-optimizations-ace-mc-settings.php:156
 msgid "Add a column to the WordPress users admin table showing the total number of WooCommerce orders for each user, across all order statuses."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-settings.php:148
+#: includes/class-optimizations-ace-mc-settings.php:157
 msgid "Display store categories in the store locator info windows."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-settings.php:149
+#: includes/class-optimizations-ace-mc-settings.php:158
 msgid "Disable the REST API endpoint for the WP Store Locator post type for security."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-settings.php:150
+#: includes/class-optimizations-ace-mc-settings.php:159
 msgid "Add a registration date column to the WordPress users admin table."
 msgstr ""
 
@@ -160,7 +160,7 @@ msgstr ""
 msgid "Order Count"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-wpsl-optimizations.php:119
+#: includes/class-optimizations-ace-mc-wpsl-optimizations.php:134
 msgid "Certifications:"
 msgstr ""
 

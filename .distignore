@@ -59,6 +59,8 @@
 /.yamllint.yml
 /composer.json
 /composer.lock
+/package.json
+/package-lock.json
 /phpcs.xml
 /phpmd.xml
 /phpstan.neon
@@ -67,6 +69,7 @@
 /renovate.json
 /stubs
 /tests
+/tslint.json
 
 # Dependencies, caches, and build output
 /vendor

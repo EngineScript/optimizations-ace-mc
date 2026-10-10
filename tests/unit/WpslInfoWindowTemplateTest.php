@@ -125,6 +125,15 @@ final class WpslInfoWindowTemplateTest extends Oam_Test_Case {
 	}
 
 	/**
+	 * A label of the wrong type, from a broken filter, is left out instead of failing.
+	 */
+	public function test_label_of_the_wrong_type_is_left_out(): void {
+		add_filter( 'optimizations_ace_mc_store_category_label', static fn(): array => array( 'Label' ) );
+
+		$this->assertStringContainsString( '<p> <%= terms %></p>', $this->filtered( '' ) );
+	}
+
+	/**
 	 * Markup in a translated or filtered label is printed as text.
 	 */
 	public function test_label_is_escaped(): void {

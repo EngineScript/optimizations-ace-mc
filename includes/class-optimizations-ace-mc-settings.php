@@ -71,8 +71,8 @@ final class Optimizations_Ace_Mc_Settings {
 	 * @since 1.0.9
 	 */
 	public function refresh(): void {
-		$saved_settings = get_option( self::OPTION_NAME, [] );
-		$this->settings = $this->sanitize_settings( is_array( $saved_settings ) ? $saved_settings : [] );
+		// A stored value that is not an array is treated as nothing stored.
+		$this->settings = $this->sanitize_settings( get_option( self::OPTION_NAME, [] ) );
 	}
 
 	/**
@@ -125,12 +125,21 @@ final class Optimizations_Ace_Mc_Settings {
 		$sanitized = [];
 
 		foreach ( array_keys( self::DEFAULT_SETTINGS ) as $key ) {
-			$value = $input[ $key ] ?? false;
-
-			$sanitized[ $key ] = is_scalar( $value ) && false !== filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+			$sanitized[ $key ] = self::is_checked( $input[ $key ] ?? false );
 		}
 
 		return $sanitized;
+	}
+
+	/**
+	 * Read a submitted or stored value as a checkbox state.
+	 *
+	 * @since 1.6.1
+	 * @param mixed $value Raw value.
+	 * @return bool Whether the value means "on".
+	 */
+	private static function is_checked( mixed $value ): bool {
+		return is_scalar( $value ) && false !== filter_var( $value, FILTER_VALIDATE_BOOLEAN );
 	}
 
 	/**

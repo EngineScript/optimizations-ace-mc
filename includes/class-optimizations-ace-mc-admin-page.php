@@ -78,7 +78,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	 * @param string $hook_suffix The current admin page hook suffix.
 	 */
 	public function enqueue_admin_styles( string $hook_suffix ): void {
-		if ( $hook_suffix !== $this->settings_page_hook ) {
+		if ( '' === $this->settings_page_hook || $hook_suffix !== $this->settings_page_hook ) {
 			return;
 		}
 

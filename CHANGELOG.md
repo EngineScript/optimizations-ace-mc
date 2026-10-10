@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Store locator info windows no longer stop opening after "Show Store Categories" is enabled while WP Store Locator still holds cached store data; that cache is now also cleared when the setting changes
 - The plugin no longer calls WP Store Locator template functions that are deprecated since WP Store Locator 3.0
 - A value of the wrong type from another plugin on the store data filter is passed through instead of causing a fatal error
+- A store category named "0" is no longer left out of the info window
+- A category label, date format, or time format of the wrong type from another plugin's filter is read as empty text instead of causing a type error
+- The settings page stylesheet is no longer requested when WordPress could not add the settings menu entry
 
 ## [1.6.0] - 2026-10-01
 

@@ -248,6 +248,17 @@ final class WpslOptimizationsTest extends Oam_Test_Case {
 	}
 
 	/**
+	 * A category named "0" is a name like any other.
+	 */
+	public function test_a_category_named_zero_is_kept(): void {
+		$GLOBALS['oam_test']['terms'][15] = array( self::term( '0' ), self::term( 'Zone B' ) );
+
+		$meta = $this->feature()->add_store_categories_to_meta( array(), 15 );
+
+		$this->assertSame( '0, Zone B', $meta['terms'] );
+	}
+
+	/**
 	 * A name that is not text, which only a broken term filter could produce, is left out.
 	 */
 	public function test_category_names_that_are_not_text_are_left_out(): void {

@@ -6,7 +6,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      day: "monday"
       time: "09:00"
     # Set custom labels on pull requests
     labels:
@@ -27,7 +26,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      day: "monday"
       time: "09:00"
     # Set custom labels on pull requests
     labels:
@@ -49,3 +47,22 @@ updates:
     allow:
       - dependency-type: "direct"
       - dependency-type: "indirect"
+
+  # Updates for npm dependencies (the JavaScript test tooling)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+    # Set custom labels on pull requests
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "automated"
+      - "maintenance"
+    # Limit the number of open PRs
+    open-pull-requests-limit: 10
+    # Group all of the test tooling together
+    groups:
+      dev-dependencies:
+        dependency-type: "development"
