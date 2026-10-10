@@ -40,6 +40,7 @@ jobs:
         id: checkout_code
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           # Always fetch the latest commit, disable any caching
           fetch-depth: 0
           clean: true
@@ -86,8 +87,6 @@ jobs:
 
           cp optimizations-ace-mc.php "$BUILD_DIR/"
           cp readme.txt "$BUILD_DIR/"
-          cp README.md "$BUILD_DIR/"
-          cp CHANGELOG.md "$BUILD_DIR/"
           cp LICENSE "$BUILD_DIR/"
           cp -r includes "$BUILD_DIR/"
           cp -r assets "$BUILD_DIR/"
@@ -208,6 +207,8 @@ jobs:
       - name: Checkout code
         id: checkout_code
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.3
         id: setup_php_8_3
@@ -301,6 +302,8 @@ jobs:
       - name: Checkout code
         id: checkout_code
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.3
         id: setup_php_8_3
@@ -505,6 +508,7 @@ jobs:
         id: checkout_code
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           # Always fetch the latest commit, disable any caching
           fetch-depth: 0
           clean: true
@@ -550,8 +554,8 @@ jobs:
         run: |
           # Use WordPress-specific PHPMD configuration (WordPress snake_case compatible)
           echo "Using WordPress-specific PHPMD configuration (WordPress snake_case compatible)..."
-          # A CLI --exclude replaces phpmd.xml exclude-patterns, so list every non-production path.
-          vendor/bin/phpmd . text phpmd.xml --exclude vendor,tests,stubs,assets,.private,node_modules
+          # The same non-production paths as the exclude patterns in phpmd.xml and as "composer phpmd".
+          vendor/bin/phpmd analyze . --no-progress --format text --ruleset phpmd.xml --exclude vendor --exclude tests --exclude stubs --exclude assets --exclude .private --exclude node_modules
 
       - name: Preserve diagnostic summary
         id: preserve_diagnostics
@@ -620,6 +624,8 @@ jobs:
       - name: Checkout code
         id: checkout_code
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.3
         id: setup_php_8_3
@@ -711,6 +717,8 @@ jobs:
       - name: Checkout code
         id: checkout_code
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.3
         id: setup_php_8_3
@@ -873,6 +881,7 @@ jobs:
         id: checkout_code
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           # Always fetch the latest commit, disable any caching
           fetch-depth: 0
           clean: true
@@ -998,6 +1007,8 @@ jobs:
       - name: Checkout code
         id: checkout_code
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup PHP ${{ matrix.php-version }}
         id: setup_php
@@ -1044,6 +1055,16 @@ jobs:
         with:
           dependency-versions: ${{ matrix.dependency-versions }}
           composer-options: "--prefer-dist --no-progress"
+
+      - name: Run unit tests
+        id: run_unit_tests
+        run: |
+          # The tracked unit suite needs no WordPress install. It runs here, on the
+          # Composer-resolved PHPUnit and with the tracked phpunit.xml and
+          # tests/bootstrap.php, before the next steps pin PHPUnit 9.6 and generate
+          # the WordPress integration bootstrap and configuration in their place.
+          vendor/bin/phpunit --version
+          vendor/bin/phpunit --configuration phpunit.xml --testsuite unit --fail-on-empty-test-suite
 
       - name: Pin PHPUnit for WordPress test suite
         id: pin_phpunit_for_wordpress_test_suite
@@ -1258,7 +1279,11 @@ jobs:
       - name: Create Test File
         id: create_test_file
         run: |
-          cat > tests/OptimizationsAceMcTest.php << 'EOF'
+          # The generated suite lives in tests/integration so that the WordPress
+          # configuration below does not pick up the tracked tests/unit suite,
+          # which defines its own stand-ins for WordPress functions.
+          mkdir -p tests/integration
+          cat > tests/integration/OptimizationsAceMcTest.php << 'EOF'
           <?php
           /**
            * Class OptimizationsAceMcTest
@@ -1280,6 +1305,20 @@ jobs:
 
               public function tear_down() {
                   delete_option(self::OPTION);
+                  unregister_setting('optimizations_ace_mc_group', self::OPTION);
+                  wp_dequeue_style('optimizations-ace-mc-admin');
+                  wp_deregister_style('optimizations-ace-mc-admin');
+                  foreach (['wpsl_stores' => 'unregister_post_type', 'wpsl_store_category' => 'unregister_taxonomy'] as $name => $unregister) {
+                      if ('wpsl_stores' === $name ? post_type_exists($name) : taxonomy_exists($name)) {
+                          $unregister($name);
+                      }
+                  }
+                  unset(
+                      $GLOBALS['wp_settings_sections']['optimizations-ace-mc'],
+                      $GLOBALS['wp_settings_fields']['optimizations-ace-mc'],
+                      $GLOBALS['submenu']['options-general.php'],
+                      $GLOBALS['title']
+                  );
                   unset($GLOBALS['current_screen']);
                   wp_set_current_user(0);
                   parent::tear_down();
@@ -1453,6 +1492,134 @@ jobs:
                   $this->assertSame('', ob_get_clean());
               }
 
+              public function test_settings_page_renders_for_administrators_only() {
+                  require_once ABSPATH . 'wp-admin/includes/admin.php';
+                  $GLOBALS['title'] = 'ACE MC Optimizations';
+                  $page = new Optimizations_Ace_Mc_Admin_Page($this->settings_with(['wpsl_disable_rest_api' => '1']));
+                  $page->register_settings();
+                  wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+                  ob_start();
+                  $page->render();
+                  $html = ob_get_clean();
+                  $this->assertStringContainsString('action="options.php"', $html);
+                  // Printed by WordPress: the option group and the nonce that options.php checks.
+                  $this->assertMatchesRegularExpression('/name=.option_page. value=.optimizations_ace_mc_group./', $html);
+                  $this->assertStringContainsString('name="_wpnonce"', $html);
+                  foreach (self::KEYS as $key) {
+                      $this->assertSame(1, substr_count($html, 'name="' . self::OPTION . '[' . $key . ']"'), $key);
+                      $this->assertSame(1, substr_count($html, '<label for="' . $key . '">'), $key);
+                  }
+                  $this->assertSame(1, substr_count($html, "checked='checked'"));
+                  $this->assertMatchesRegularExpression('/<input[^>]+id="wpsl_disable_rest_api"[^>]+checked=/', $html);
+                  wp_set_current_user(self::factory()->user->create(['role' => 'subscriber']));
+                  $this->expectException(WPDieException::class);
+                  $page->render();
+              }
+
+              public function test_menu_entry_and_stylesheet_belong_to_the_settings_screen() {
+                  require_once ABSPATH . 'wp-admin/includes/admin.php';
+                  wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+                  $page = new Optimizations_Ace_Mc_Admin_Page(new Optimizations_Ace_Mc_Settings());
+                  $page->add_admin_menu();
+                  $entries = array_values(array_filter(
+                      $GLOBALS['submenu']['options-general.php'] ?? [],
+                      static fn($entry) => 'optimizations-ace-mc' === $entry[2]
+                  ));
+                  $this->assertCount(1, $entries);
+                  $this->assertSame('manage_options', $entries[0][1]);
+                  $hook = get_plugin_page_hookname('optimizations-ace-mc', 'options-general.php');
+                  $this->assertSame(10, has_action($hook, [$page, 'render']));
+                  $page->enqueue_admin_styles('index.php');
+                  $page->enqueue_admin_styles('options-general.php');
+                  $this->assertFalse(wp_style_is('optimizations-ace-mc-admin', 'enqueued'));
+                  $page->enqueue_admin_styles($hook);
+                  $this->assertTrue(wp_style_is('optimizations-ace-mc-admin', 'enqueued'));
+                  $style = wp_styles()->registered['optimizations-ace-mc-admin'];
+                  $this->assertSame(plugins_url('assets/css/admin.css', OPTIMIZATIONS_ACE_MC_PLUGIN_FILE), $style->src);
+                  $this->assertSame(OPTIMIZATIONS_ACE_MC_VERSION, $style->ver);
+              }
+
+              public function test_store_categories_come_from_the_terms_of_the_store() {
+                  register_taxonomy('wpsl_store_category', 'post');
+                  $store = self::factory()->post->create();
+                  $terms = [];
+                  foreach (['Sales & Service', 'Certified Installer'] as $name) {
+                      $terms[] = self::factory()->term->create(['taxonomy' => 'wpsl_store_category', 'name' => $name]);
+                  }
+                  wp_set_object_terms($store, $terms, 'wpsl_store_category');
+                  $wpsl = new Optimizations_Ace_Mc_Wpsl_Optimizations(new Optimizations_Ace_Mc_Settings());
+                  $this->assertSame(
+                      ['store' => 'kept', 'terms' => 'Certified Installer, Sales &amp; Service'],
+                      $wpsl->add_store_categories_to_meta(['store' => 'kept'], $store)
+                  );
+                  $this->assertSame(['terms' => ''], $wpsl->add_store_categories_to_meta([], self::factory()->post->create()));
+                  // Without the taxonomy the term lookup returns a WP_Error.
+                  unregister_taxonomy('wpsl_store_category');
+                  $uncached = self::factory()->post->create();
+                  $this->assertWPError(get_the_terms($uncached, 'wpsl_store_category'));
+                  $this->assertSame(['terms' => ''], $wpsl->add_store_categories_to_meta([], $uncached));
+              }
+
+              public function test_rest_switch_takes_the_store_post_type_out_of_rest() {
+                  $register = static function () {
+                      return register_post_type('wpsl_stores', apply_filters('wpsl_post_type_args', ['public' => true, 'show_in_rest' => true]));
+                  };
+                  $this->assertTrue($register()->show_in_rest);
+                  unregister_post_type('wpsl_stores');
+                  (new Optimizations_Ace_Mc_Wpsl_Optimizations($this->settings_with(['wpsl_disable_rest_api' => '1'])))->register_hooks();
+                  $type = $register();
+                  $this->assertFalse($type->show_in_rest);
+                  $this->assertTrue($type->public);
+                  $this->assertNotContains('wpsl_stores', get_post_types(['show_in_rest' => true]));
+              }
+
+              public function test_registration_date_is_shown_in_the_site_time_zone() {
+                  global $wpdb;
+                  update_option('date_format', 'Y-m-d');
+                  update_option('time_format', 'H:i');
+                  update_option('timezone_string', 'Europe/Amsterdam');
+                  $user_id = self::factory()->user->create();
+                  $wpdb->update($wpdb->users, ['user_registered' => '2024-01-15 23:30:00'], ['ID' => $user_id]);
+                  clean_user_cache($user_id);
+                  $admin = new Optimizations_Ace_Mc_Admin_Optimizations(new Optimizations_Ace_Mc_Settings());
+                  $this->assertSame('2024-01-16 00:30', $admin->display_user_registration_date_column('', 'registration_date', $user_id));
+              }
+
+              public function test_info_window_template_gains_guarded_categories() {
+                  (new Optimizations_Ace_Mc_Wpsl_Optimizations($this->settings_with(['wpsl_show_store_categories' => '1'])))->register_hooks();
+                  $template = "<div class=\"wpsl-info-window\">\r\n\t<p><%= store %></p>\r\n\t<%= createInfoWindowActions( id ) %>\r\n</div>";
+                  $filtered = apply_filters('wpsl_info_window_template', $template);
+                  // Store data cached before the setting was enabled has no "terms" value.
+                  $this->assertStringContainsString('<% if ( typeof terms !== "undefined" && terms ) { %>', $filtered);
+                  $this->assertLessThan(strpos($filtered, 'createInfoWindowActions'), strpos($filtered, '<%= terms %>'));
+                  $this->assertSame($template, preg_replace('/\t<% if \( typeof terms.*?<% \} %>\r\n/s', '', $filtered));
+                  $this->assertSame(['terms' => ''], apply_filters('wpsl_store_meta', [], 0));
+                  $this->assertNull(apply_filters('wpsl_store_meta', null, 0));
+              }
+
+              public function test_changing_the_category_setting_drops_the_store_locator_cache() {
+                  if (!function_exists('wpsl_flush_store_cache')) {
+                      function wpsl_flush_store_cache() {
+                          ++$GLOBALS['optimizations_ace_mc_test_flushes'];
+                      }
+                  }
+                  $GLOBALS['optimizations_ace_mc_test_flushes'] = 0;
+                  $this->use_admin_screen();
+                  (new Optimizations_Ace_Mc_Wpsl_Optimizations(new Optimizations_Ace_Mc_Settings()))->register_hooks();
+                  $on = ['wpsl_show_store_categories' => true] + $this->all_off();
+                  add_option(self::OPTION, $this->all_off());
+                  $this->assertSame(0, $GLOBALS['optimizations_ace_mc_test_flushes'], 'First save with the setting off');
+                  update_option(self::OPTION, $on);
+                  $this->assertSame(1, $GLOBALS['optimizations_ace_mc_test_flushes'], 'Setting turned on');
+                  update_option(self::OPTION, ['wpsl_disable_rest_api' => true] + $on);
+                  $this->assertSame(1, $GLOBALS['optimizations_ace_mc_test_flushes'], 'Another setting changed');
+                  update_option(self::OPTION, $this->all_off());
+                  $this->assertSame(2, $GLOBALS['optimizations_ace_mc_test_flushes'], 'Setting turned off');
+                  delete_option(self::OPTION);
+                  add_option(self::OPTION, $on);
+                  $this->assertSame(3, $GLOBALS['optimizations_ace_mc_test_flushes'], 'First save with the setting on');
+              }
+
               public function test_wordpress_version_compatibility() {
                   global $wp_version;
                   $this->assertNotEmpty($wp_version, 'WordPress version should be available');
@@ -1480,7 +1647,7 @@ jobs:
           >
               <testsuites>
                   <testsuite name="Optimizations ACE MC">
-                      <directory suffix="Test.php">./tests/</directory>
+                      <directory suffix="Test.php">./tests/integration/</directory>
                   </testsuite>
               </testsuites>
           </phpunit>
@@ -1541,6 +1708,7 @@ jobs:
             php_syntax_lint=${{ steps.php_syntax_lint.outcome }}
             install_subversion=${{ steps.install_subversion.outcome }}
             install_composer_dependencies=${{ steps.install_composer_dependencies.outcome }}
+            run_unit_tests=${{ steps.run_unit_tests.outcome }}
             pin_phpunit_for_wordpress_test_suite=${{ steps.pin_phpunit_for_wordpress_test_suite.outcome }}
             verify_phpunit_dependency_versions=${{ steps.verify_phpunit_dependency_versions.outcome }}
             prepare_database=${{ steps.prepare_database.outcome }}
@@ -1598,6 +1766,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Create issue on test failure
@@ -1606,7 +1775,7 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FAILURE_STAGE: ${{ steps.checkout_code.outcome == 'failure' && 'checkout_code' || steps.setup_php.outcome == 'failure' && 'setup_php' || steps.use_isolated_composer_auth.outcome == 'failure' && 'use_isolated_composer_auth' || steps.php_syntax_lint.outcome == 'failure' && 'php_syntax_lint' || steps.install_subversion.outcome == 'failure' && 'install_subversion' || steps.install_composer_dependencies.outcome == 'failure' && 'install_composer_dependencies' || steps.pin_phpunit_for_wordpress_test_suite.outcome == 'failure' && 'pin_phpunit_for_wordpress_test_suite' || steps.verify_phpunit_dependency_versions.outcome == 'failure' && 'verify_phpunit_dependency_versions' || steps.prepare_database.outcome == 'failure' && 'prepare_database' || steps.create_tests_directory_structure.outcome == 'failure' && 'create_tests_directory_structure' || steps.create_wp_tests_install_script.outcome == 'failure' && 'create_wp_tests_install_script' || steps.create_bootstrap_file.outcome == 'failure' && 'create_bootstrap_file' || steps.create_test_file.outcome == 'failure' && 'create_test_file' || steps.create_phpunit_config.outcome == 'failure' && 'create_phpunit_config' || steps.setup_wp_tests.outcome == 'failure' && 'setup_wp_tests' || steps.run_plugin_test.outcome == 'failure' && 'run_plugin_test' || steps.report_test_status.outcome == 'failure' && 'report_test_status' || steps.ensure_repository_files_available_after_failure.outcome == 'failure' && 'ensure_repository_files_available_after_failure' || 'unknown_or_canceled' }}
+          FAILURE_STAGE: ${{ steps.checkout_code.outcome == 'failure' && 'checkout_code' || steps.setup_php.outcome == 'failure' && 'setup_php' || steps.use_isolated_composer_auth.outcome == 'failure' && 'use_isolated_composer_auth' || steps.php_syntax_lint.outcome == 'failure' && 'php_syntax_lint' || steps.install_subversion.outcome == 'failure' && 'install_subversion' || steps.install_composer_dependencies.outcome == 'failure' && 'install_composer_dependencies' || steps.run_unit_tests.outcome == 'failure' && 'run_unit_tests' || steps.pin_phpunit_for_wordpress_test_suite.outcome == 'failure' && 'pin_phpunit_for_wordpress_test_suite' || steps.verify_phpunit_dependency_versions.outcome == 'failure' && 'verify_phpunit_dependency_versions' || steps.prepare_database.outcome == 'failure' && 'prepare_database' || steps.create_tests_directory_structure.outcome == 'failure' && 'create_tests_directory_structure' || steps.create_wp_tests_install_script.outcome == 'failure' && 'create_wp_tests_install_script' || steps.create_bootstrap_file.outcome == 'failure' && 'create_bootstrap_file' || steps.create_test_file.outcome == 'failure' && 'create_test_file' || steps.create_phpunit_config.outcome == 'failure' && 'create_phpunit_config' || steps.setup_wp_tests.outcome == 'failure' && 'setup_wp_tests' || steps.run_plugin_test.outcome == 'failure' && 'run_plugin_test' || steps.report_test_status.outcome == 'failure' && 'report_test_status' || steps.ensure_repository_files_available_after_failure.outcome == 'failure' && 'ensure_repository_files_available_after_failure' || 'unknown_or_canceled' }}
           PHP_VERSION: ${{ matrix.php-version }}
           WP_VERSION: ${{ matrix.wp-version }}
           DEPENDENCY_VERSIONS: ${{ matrix.dependency-versions }}

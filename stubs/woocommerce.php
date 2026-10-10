@@ -16,19 +16,9 @@ function wc_get_customer_order_count( int $user_id ): int {
 }
 
 /**
- * Get the WP Store Locator info-window store header template.
+ * Drop WP Store Locator's cached store data (WP Store Locator 3.0 and later).
  *
- * @return string
+ * @return void
  */
-function wpsl_store_header_template(): string {
-	return '';
-}
-
-/**
- * Get the WP Store Locator address placeholder template.
- *
- * @return string
- */
-function wpsl_address_format_placeholders(): string {
-	return '';
+function wpsl_flush_store_cache(): void {
 }

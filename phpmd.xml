@@ -8,8 +8,8 @@
     <description>WordPress-compatible PHPMD ruleset for code quality and naming conventions.</description>
 
     <!--
-        Non-production paths. A command-line exclude replaces these patterns, so
-        the composer script and CI job pass the same list with exclude.
+        Non-production paths. The composer script and the CI job pass the same
+        list on the command line.
     -->
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*/.private/*</exclude-pattern>

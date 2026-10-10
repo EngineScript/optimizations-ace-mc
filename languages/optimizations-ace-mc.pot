@@ -160,7 +160,7 @@ msgstr ""
 msgid "Order Count"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-wpsl-optimizations.php:94
+#: includes/class-optimizations-ace-mc-wpsl-optimizations.php:119
 msgid "Certifications:"
 msgstr ""
 

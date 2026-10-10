@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Store categories are now added to WP Store Locator's own info window template instead of replacing it, so the info window keeps everything WP Store Locator is set to show (contact details, hours, description, and links)
+- The release package no longer includes `README.md` and `CHANGELOG.md`; `readme.txt` carries the description and the changelog. A `.distignore` file and `git archive` export rules now match the release package
+
+### Fixed
+
+- Store locator info windows no longer stop opening after "Show Store Categories" is enabled while WP Store Locator still holds cached store data; that cache is now also cleared when the setting changes
+- The plugin no longer calls WP Store Locator template functions that are deprecated since WP Store Locator 3.0
+- A value of the wrong type from another plugin on the store data filter is passed through instead of causing a fatal error
+
 ## [1.6.0] - 2026-10-01
 
 ### Added
