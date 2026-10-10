@@ -97,7 +97,7 @@ test( 'markup in a category name is shown as text', () => {
 	assert.equal( view.element.querySelectorAll( 'script, img' ).length, 0 );
 	assert.equal( categories.children.length, 0 );
 	assert.ok( markup.names.every( ( name ) => name.startsWith( '<' ) ), 'The names hold markup.' );
-	assert.equal( categories.textContent, 'Certifications: ' + markup.names.join( ', ' ) );
+	assert.equal( categories.textContent, `Certifications: ${ markup.names.join( ', ' ) }` );
 } );
 
 test( 'markup in the category label is shown as text', () => {
@@ -107,7 +107,7 @@ test( 'markup in the category label is shown as text', () => {
 	assert.equal( view.element.querySelectorAll( 'script, b' ).length, 0 );
 	assert.equal( categories.children.length, 0 );
 	assert.ok( markup.label.includes( '<' ), 'The label holds markup.' );
-	assert.equal( categories.textContent, markup.label + ' Gold Dealer, Service & Repair' );
+	assert.equal( categories.textContent, `${ markup.label } Gold Dealer, Service & Repair` );
 } );
 
 test( 'a category named 0 is shown', () => {
