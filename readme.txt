@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -66,6 +66,15 @@ No, this plugin is designed to improve performance by adding useful admin enhanc
 Yes, this plugin focuses on specific admin and functionality enhancements rather than general optimization, so it should work alongside other optimization plugins.
 
 == Changelog ==
+
+= 1.6.1 - 2026-10-09 =
+* Changed: Store categories are added to WP Store Locator's own info window template instead of replacing it, so the info window keeps everything WP Store Locator is set to show
+* Changed: The release package no longer includes `README.md` and `CHANGELOG.md`
+* Fixed: Store locator info windows no longer stop opening after "Show Store Categories" is enabled while WP Store Locator holds cached store data; that cache is cleared when the setting changes
+* Fixed: The plugin no longer calls WP Store Locator template functions that are deprecated since WP Store Locator 3.0
+* Fixed: Values of the wrong type from another plugin's filters are passed through or read as empty text instead of causing an error
+* Fixed: A store category named "0" is no longer left out of the info window
+* Fixed: The settings page stylesheet is no longer requested when WordPress could not add the settings menu entry
 
 = 1.6.0 - 2026-10-01 =
 * Added: `Requires Plugins: woocommerce` header so WordPress enforces the WooCommerce dependency; WP Store Locator is optional

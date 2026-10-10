@@ -1,6 +1,6 @@
 # Optimizations ACE MC
 
-[![Version](https://img.shields.io/badge/Version-1.6.0-orange.svg?logo=github)](https://github.com/EngineScript/optimizations-ace-mc/releases/latest/download/optimizations-ace-mc-1.6.0.zip)
+[![Version](https://img.shields.io/badge/Version-1.6.1-orange.svg?logo=github)](https://github.com/EngineScript/optimizations-ace-mc/releases/latest/download/optimizations-ace-mc-1.6.1.zip)
 
 A lightweight WordPress optimization plugin with configurable performance enhancements for WooCommerce, WP Store Locator, and WordPress admin interfaces.
 

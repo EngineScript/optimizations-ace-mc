@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-10-09
+
 ### Changed
 
 - Store categories are now added to WP Store Locator's own info window template instead of replacing it, so the info window keeps everything WP Store Locator is set to show (contact details, hours, description, and links)
