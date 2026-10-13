@@ -22,8 +22,15 @@
     <rule ref="rulesets/cleancode.xml">
         <!-- WordPress code uses core classes without namespace imports. -->
         <exclude name="MissingImport"/>
-        <!-- The plugin coordinator is reached through its static instance() accessor. -->
+        <!-- Added again below, with the one class that is reached statically. -->
         <exclude name="StaticAccess"/>
+    </rule>
+
+    <rule ref="rulesets/cleancode.xml/StaticAccess">
+        <properties>
+            <!-- The plugin coordinator is reached through its static instance() accessor. -->
+            <property name="exceptions" value="Optimizations_Ace_Mc"/>
+        </properties>
     </rule>
 
     <!-- Code Size Rules (default thresholds) -->
@@ -39,45 +46,21 @@
         <exclude name="CamelCasePropertyName"/>
     </rule>
 
-    <!-- Design Rules (with WordPress exceptions) -->
-    <rule ref="rulesets/design.xml">
-        <!-- Each plugin file stops direct requests with die when WPINC is undefined. -->
-        <exclude name="ExitExpression"/>
+    <!-- Design Rules -->
+    <rule ref="rulesets/design.xml"/>
+
+    <!-- Naming Rules. The camelCase rules are in the controversial ruleset. -->
+    <rule ref="rulesets/naming.xml">
+        <!-- Added again below with a limit that fits prefixed WordPress names. -->
+        <exclude name="LongClassName"/>
     </rule>
 
-    <!-- WordPress-specific naming rules. -->
-    <!-- WordPress uses snake_case naming, which conflicts with standard camelCase rules. -->
-    <!-- Import only WordPress-compatible naming rules. -->
-
-    <rule ref="rulesets/naming.xml/ShortVariable">
+    <rule ref="rulesets/naming.xml/LongClassName">
         <properties>
-            <!-- WordPress allows short variables like $id, $wp, but avoid single letters -->
-            <property name="minimum" value="2"/>
+            <!-- Class names start with the plugin prefix; the longest has 46 characters. -->
+            <property name="maximum" value="50"/>
         </properties>
     </rule>
-
-    <rule ref="rulesets/naming.xml/LongVariable">
-        <properties>
-            <!-- WordPress descriptive variable names can be longer. -->
-            <property name="maximum" value="40"/>
-        </properties>
-    </rule>
-
-    <rule ref="rulesets/naming.xml/ShortMethodName">
-        <properties>
-            <!-- WordPress allows short method names like get(), set(), but avoid very short -->
-            <property name="minimum" value="2"/>
-        </properties>
-    </rule>
-
-    <!-- Allow WordPress constructor patterns. -->
-    <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass"/>
-
-    <!-- WordPress constant naming (UPPER_CASE_WITH_UNDERSCORES). -->
-    <rule ref="rulesets/naming.xml/ConstantNamingConventions"/>
-
-    <!-- WordPress boolean method naming (is_*, has_*, can_*). -->
-    <rule ref="rulesets/naming.xml/BooleanGetMethodName"/>
 
     <!-- Unused Code Rules (always enforce) -->
     <rule ref="rulesets/unusedcode.xml"/>

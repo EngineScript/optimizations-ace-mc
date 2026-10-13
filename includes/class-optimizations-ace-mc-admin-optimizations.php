@@ -67,6 +67,7 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 * @since 1.0.9
 	 * @param mixed $columns Existing columns.
 	 * @return mixed
+	 * @psalm-api
 	 */
 	public function add_user_registration_date_column( mixed $columns ): mixed {
 		if ( ! is_array( $columns ) ) {
@@ -86,6 +87,7 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 * @param string $column_name Name of the column.
 	 * @param int    $user_id User ID.
 	 * @return mixed
+	 * @psalm-api
 	 */
 	public function display_user_registration_date_column( mixed $output, string $column_name, int $user_id ): mixed {
 		if ( 'registration_date' !== $column_name ) {
@@ -103,6 +105,7 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 * @since 1.0.9
 	 * @param mixed $columns Sortable columns.
 	 * @return mixed
+	 * @psalm-api
 	 */
 	public function make_user_registration_date_sortable( mixed $columns ): mixed {
 		if ( ! is_array( $columns ) ) {

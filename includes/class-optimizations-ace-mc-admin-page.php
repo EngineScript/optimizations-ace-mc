@@ -218,6 +218,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	 *
 	 * @since 1.0.9
 	 * @param array{label_for?:string} $args Field arguments.
+	 * @psalm-api
 	 */
 	public function checkbox_field_callback( array $args ): void {
 		$name = $args['label_for'] ?? '';

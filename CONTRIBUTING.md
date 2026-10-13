@@ -32,7 +32,7 @@ This project follows the [WordPress Community Code of Conduct](https://make.word
 
    ```bash
    composer install
-   npm ci
+   npm install
    ```
 
 4. Create a feature branch:
@@ -104,7 +104,6 @@ optimizations-ace-mc/
 |-- LICENSE                             # GPL license
 |-- composer.json                       # PHP dependencies and check scripts
 |-- package.json                        # JavaScript test dependencies
-|-- package-lock.json                   # Locked JavaScript test dependencies
 |-- phpcs.xml                           # PHPCS configuration
 |-- phpstan.neon                        # PHPStan configuration
 |-- phpmd.xml                           # PHPMD configuration
@@ -172,6 +171,8 @@ function optimizations_ace_mc_example_function( string $input ): string {
    - Run PHPMD for code quality checks.
    - Run the PHPUnit unit tests with `composer test`.
    - Run the JavaScript tests with `npm test`.
+   - Run the JavaScript, Markdown and CSS linters with `npm run lint:js`, `npm run lint:md` and `npm run lint:css`.
+   - The lint job also runs yamllint, actionlint, zizmor, Ruff and mypy on the workflows and the scripts in `.github`; `.github/lint-requirements.txt` pins their versions.
    - The compatibility workflow on GitHub runs all of these, and the WordPress integration tests, on every push and pull request.
 
 ## Submitting Changes

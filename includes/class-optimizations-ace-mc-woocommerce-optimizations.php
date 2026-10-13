@@ -65,6 +65,7 @@ final class Optimizations_Ace_Mc_WooCommerce_Optimizations {
 	 * @since 1.0.9
 	 * @param mixed $columns Existing columns.
 	 * @return mixed Modified columns.
+	 * @psalm-api
 	 */
 	public function add_user_order_count_column( mixed $columns ): mixed {
 		if ( ! is_array( $columns ) ) {
@@ -83,6 +84,7 @@ final class Optimizations_Ace_Mc_WooCommerce_Optimizations {
 	 * @param string $column_name Name of the column.
 	 * @param int    $user_id User ID.
 	 * @return mixed
+	 * @psalm-api
 	 */
 	public function display_user_order_count_column( mixed $output, string $column_name, int $user_id ): mixed {
 		if ( 'user_order_count' !== $column_name ) {

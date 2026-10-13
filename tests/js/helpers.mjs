@@ -17,7 +17,7 @@ const renderScript = fileURLToPath( new URL( './render-info-window.php', import.
 
 /** Templates and store data rendered by PHP. */
 export const rendered = JSON.parse(
-	execFileSync( 'php', [ '-d', 'display_errors=stderr', renderScript ], { encoding: 'utf8' } )
+	execFileSync( 'php', [ '-d', 'display_errors=stderr', renderScript ], { encoding: 'utf8' } ),
 );
 
 /** The template settings WP Store Locator sets (setUnderscoreSettings() in its wpsl-setup.js). */
@@ -55,7 +55,7 @@ const templateHelpers = {
  *
  * @param {string} template - Underscore template.
  * @param {Object} settings - Template settings; none means the Underscore defaults.
- * @returns {Function} The compiled template.
+ * @return {(data?: Object) => string} The compiled template.
  */
 export function compile( template, settings = storeLocatorSettings ) {
 	return _.template( template, settings );
@@ -65,8 +65,8 @@ export function compile( template, settings = storeLocatorSettings ) {
  * Build an info window the way WP Store Locator does in getInfoWindowTemplate().
  *
  * @param {string} template - Underscore template.
- * @param {Object} store - Store data.
- * @returns {Object} The markup, its info window element, and the paragraphs and action links in it.
+ * @param {Object} store    - Store data.
+ * @return {Object} The markup, its info window element, and the paragraphs and action links in it.
  */
 export function infoWindow( template, store ) {
 	const data = _.defaults( _.extend( {}, store, templateHelpers ), optionalPlaceholders );
@@ -86,7 +86,7 @@ export function infoWindow( template, store ) {
  *
  * @param {string} original - Template before the plugin's filter.
  * @param {string} filtered - Template after it.
- * @returns {string} The added text; empty when the filter did more than add one piece.
+ * @return {string} The added text; empty when the filter did more than add one piece.
  */
 export function addedPart( original, filtered ) {
 	let start = 0;

@@ -14,7 +14,7 @@ const added = addedPart( original, template );
  * Markup with each run of white space as one space. A template block that prints nothing still leaves its line break.
  *
  * @param {string} html - Markup.
- * @returns {string} The markup to compare.
+ * @return {string} The markup to compare.
  */
 function collapsed( html ) {
 	return html.replace( /\s+/g, ' ' );
@@ -33,7 +33,7 @@ test( 'every value the added piece reads is in the store data PHP builds', () =>
 	assert.equal(
 		( added.match( /<%[=-]/g ) || [] ).length,
 		printed.length,
-		'Every value the piece prints is a plain name that this test can read.'
+		'Every value the piece prints is a plain name that this test can read.',
 	);
 	assert.deepEqual( tested, printed, 'Each printed value is tested for existence first.' );
 
@@ -73,7 +73,7 @@ test( 'a store without categories gets no extra paragraph', () => {
 	assert.equal( stores.without_categories.terms, '' );
 	assert.equal(
 		collapsed( infoWindow( template, stores.without_categories ).html ),
-		collapsed( infoWindow( original, stores.without_categories ).html )
+		collapsed( infoWindow( original, stores.without_categories ).html ),
 	);
 } );
 

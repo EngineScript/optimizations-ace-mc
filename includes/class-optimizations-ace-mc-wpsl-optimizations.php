@@ -68,6 +68,7 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 * @param mixed $store_meta Existing store meta.
 	 * @param mixed $store_id   Store ID.
 	 * @return mixed
+	 * @psalm-api
 	 */
 	public function add_store_categories_to_meta( mixed $store_meta, mixed $store_id = 0 ): mixed {
 		if ( ! is_array( $store_meta ) ) {
@@ -119,6 +120,7 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 * @since 1.0.9
 	 * @param mixed $template Info window template from WP Store Locator.
 	 * @return mixed
+	 * @psalm-api
 	 */
 	public function customize_info_window_template( mixed $template = '' ): mixed {
 		if ( ! is_string( $template ) ) {
@@ -194,6 +196,7 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 * @since 1.0.9
 	 * @param mixed $args Post type arguments.
 	 * @return mixed
+	 * @psalm-api
 	 */
 	public function disable_store_locator_rest_api( mixed $args ): mixed {
 		if ( ! is_array( $args ) ) {
