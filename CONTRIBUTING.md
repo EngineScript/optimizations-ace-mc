@@ -264,7 +264,6 @@ The script scans the shipped PHP and JavaScript files and names the GitHub issue
 ## Support Channels
 
 - **Issues**: [GitHub Issues](https://github.com/EngineScript/optimizations-ace-mc/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/EngineScript/optimizations-ace-mc/discussions)
 - **Security**: Report security issues privately through the [vulnerability report form](https://github.com/EngineScript/optimizations-ace-mc/security/advisories/new); see [SECURITY.md](SECURITY.md)
 
 ## Resources
