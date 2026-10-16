@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The translation template is now generated locally with `composer make-pot` and committed with each change; the Update Translation File workflow was removed
+- The translation template names the GitHub issue tracker as its bug report address, in place of a WordPress.org support forum the plugin does not have, and its source references were refreshed
+
 ## [1.6.1] - 2026-10-09
 
 ### Changed

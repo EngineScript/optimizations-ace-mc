@@ -38,6 +38,10 @@
     "psalm:taint": "psalm --config=psalm.xml --taint-analysis",
     "phpstan": "phpstan analyze --memory-limit=1G",
     "test": "phpunit --configuration phpunit.xml --testsuite unit --fail-on-empty-test-suite",
+    "make-pot": [
+      "wp i18n make-pot . languages/optimizations-ace-mc.pot --slug=optimizations-ace-mc --domain=optimizations-ace-mc --include=optimizations-ace-mc.php,includes --headers={\\\"Report-Msgid-Bugs-To\\\":\\\"https://github.com/EngineScript/optimizations-ace-mc/issues\\\"}",
+      "git diff --quiet --ignore-matching-lines=POT-Creation-Date: -- languages/optimizations-ace-mc.pot && git checkout -- languages/optimizations-ace-mc.pot || exit 0"
+    ],
     "check-all": [
       "@phpcs",
       "@phpmd",

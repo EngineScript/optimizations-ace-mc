@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Optimizations ACE MC 1.6.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/optimizations-ace-mc\n"
+"Report-Msgid-Bugs-To: https://github.com/EngineScript/optimizations-ace-mc/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-01T02:40:28+00:00\n"
+"POT-Creation-Date: 2026-10-16T00:12:11+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: optimizations-ace-mc\n"
@@ -39,11 +39,11 @@ msgstr ""
 msgid "https://github.com/EngineScript"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-optimizations.php:76
+#: includes/class-optimizations-ace-mc-admin-optimizations.php:77
 msgid "Registration Date"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-optimizations.php:97
+#: includes/class-optimizations-ace-mc-admin-optimizations.php:99
 msgid "Unknown"
 msgstr ""
 
@@ -100,35 +100,35 @@ msgstr ""
 msgid "Configure WordPress admin interface optimizations. These features enhance the admin experience."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-page.php:248
+#: includes/class-optimizations-ace-mc-admin-page.php:249
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-page.php:281
+#: includes/class-optimizations-ace-mc-admin-page.php:282
 msgid "Plugin Information:"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-page.php:282
+#: includes/class-optimizations-ace-mc-admin-page.php:283
 msgid "This plugin provides configurable optimizations for WooCommerce, WP Store Locator, and WordPress admin interfaces."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-page.php:285
+#: includes/class-optimizations-ace-mc-admin-page.php:286
 msgid "Version:"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-page.php:299
+#: includes/class-optimizations-ace-mc-admin-page.php:300
 msgid "Support & Documentation"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-page.php:301
+#: includes/class-optimizations-ace-mc-admin-page.php:302
 msgid "For support, bug reports, or feature requests:"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-page.php:303
+#: includes/class-optimizations-ace-mc-admin-page.php:304
 msgid "Visit the GitHub repository"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-admin-page.php:304
+#: includes/class-optimizations-ace-mc-admin-page.php:305
 msgid "(opens in a new tab)"
 msgstr ""
 
@@ -156,11 +156,11 @@ msgstr ""
 msgid "Add a registration date column to the WordPress users admin table."
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-woocommerce-optimizations.php:74
+#: includes/class-optimizations-ace-mc-woocommerce-optimizations.php:75
 msgid "Order Count"
 msgstr ""
 
-#: includes/class-optimizations-ace-mc-wpsl-optimizations.php:134
+#: includes/class-optimizations-ace-mc-wpsl-optimizations.php:136
 msgid "Certifications:"
 msgstr ""
 
