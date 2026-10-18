@@ -76,7 +76,7 @@ export function infoWindow( template, store ) {
 	return {
 		html,
 		element,
-		paragraphs: Array.from( element.querySelectorAll( ':scope > p' ) ),
+		paragraphs: [ ...element.querySelectorAll( ':scope > p' ) ],
 		actions: element.querySelector( ':scope > .wpsl-info-actions' ),
 	};
 }

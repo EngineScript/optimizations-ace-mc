@@ -16,15 +16,7 @@ if ( ! defined( 'WPINC' ) ) {
  *
  * @since 1.0.9
  */
-final class Optimizations_Ace_Mc_WooCommerce_Optimizations {
-
-	/**
-	 * Settings repository.
-	 *
-	 * @since 1.0.9
-	 * @var Optimizations_Ace_Mc_Settings
-	 */
-	private Optimizations_Ace_Mc_Settings $settings;
+final readonly class Optimizations_Ace_Mc_WooCommerce_Optimizations {
 
 	/**
 	 * Constructor.
@@ -32,8 +24,7 @@ final class Optimizations_Ace_Mc_WooCommerce_Optimizations {
 	 * @since 1.0.9
 	 * @param Optimizations_Ace_Mc_Settings $settings Settings repository.
 	 */
-	public function __construct( Optimizations_Ace_Mc_Settings $settings ) {
-		$this->settings = $settings;
+	public function __construct( private Optimizations_Ace_Mc_Settings $settings ) {
 	}
 
 	/**
@@ -52,8 +43,8 @@ final class Optimizations_Ace_Mc_WooCommerce_Optimizations {
 
 		// The column calls WooCommerce directly, so skip it if WooCommerce is not loaded.
 		if ( $this->settings->is_enabled( 'woocommerce_user_order_count_column' ) && is_admin() && function_exists( 'wc_get_customer_order_count' ) ) {
-			add_filter( 'manage_users_columns', array( $this, 'add_user_order_count_column' ) );
-			add_filter( 'manage_users_custom_column', array( $this, 'display_user_order_count_column' ), 10, 3 );
+			add_filter( 'manage_users_columns', [ $this, 'add_user_order_count_column' ] );
+			add_filter( 'manage_users_custom_column', [ $this, 'display_user_order_count_column' ], 10, 3 );
 		}
 	}
 
@@ -83,7 +74,6 @@ final class Optimizations_Ace_Mc_WooCommerce_Optimizations {
 	 * @param mixed  $output Custom column output from earlier callbacks.
 	 * @param string $column_name Name of the column.
 	 * @param int    $user_id User ID.
-	 * @return mixed
 	 * @psalm-api
 	 */
 	public function display_user_order_count_column( mixed $output, string $column_name, int $user_id ): mixed {

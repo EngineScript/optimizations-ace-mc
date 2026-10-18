@@ -19,14 +19,6 @@ if ( ! defined( 'WPINC' ) ) {
 final class Optimizations_Ace_Mc_Admin_Page {
 
 	/**
-	 * Settings repository.
-	 *
-	 * @since 1.0.9
-	 * @var Optimizations_Ace_Mc_Settings
-	 */
-	private Optimizations_Ace_Mc_Settings $settings;
-
-	/**
 	 * Settings page hook suffix for conditional asset loading.
 	 *
 	 * @since 1.0.9
@@ -40,8 +32,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	 * @since 1.0.9
 	 * @param Optimizations_Ace_Mc_Settings $settings Settings repository.
 	 */
-	public function __construct( Optimizations_Ace_Mc_Settings $settings ) {
-		$this->settings = $settings;
+	public function __construct( private readonly Optimizations_Ace_Mc_Settings $settings ) {
 	}
 
 	/**
@@ -50,9 +41,9 @@ final class Optimizations_Ace_Mc_Admin_Page {
 	 * @since 1.0.9
 	 */
 	public function register_hooks(): void {
-		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
+		add_action( 'admin_menu', [ $this, 'add_admin_menu' ] );
+		add_action( 'admin_init', [ $this, 'register_settings' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_styles' ] );
 	}
 
 	/**
@@ -67,7 +58,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 			esc_html__( 'ACE MC Optimizations', 'optimizations-ace-mc' ),
 			'manage_options',
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG,
-			array( $this, 'render' )
+			[ $this, 'render' ]
 		);
 	}
 
@@ -101,7 +92,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 			Optimizations_Ace_Mc_Settings::OPTION_NAME,
 			[
 				'type'              => 'array',
-				'sanitize_callback' => array( $this->settings, 'sanitize_settings' ),
+				'sanitize_callback' => [ $this->settings, 'sanitize_settings' ],
 				'default'           => $this->settings->defaults(),
 			]
 		);
@@ -120,7 +111,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 		add_settings_section(
 			'woocommerce_section',
 			esc_html__( 'WooCommerce Optimizations', 'optimizations-ace-mc' ),
-			array( $this, 'woocommerce_section_callback' ),
+			[ $this, 'woocommerce_section_callback' ],
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG
 		);
 
@@ -138,7 +129,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 		add_settings_section(
 			'wpsl_section',
 			esc_html__( 'WP Store Locator Optimizations', 'optimizations-ace-mc' ),
-			array( $this, 'wpsl_section_callback' ),
+			[ $this, 'wpsl_section_callback' ],
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG
 		);
 
@@ -155,7 +146,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 		add_settings_section(
 			'admin_section',
 			esc_html__( 'WordPress Admin Optimizations', 'optimizations-ace-mc' ),
-			array( $this, 'admin_section_callback' ),
+			[ $this, 'admin_section_callback' ],
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG
 		);
 
@@ -174,7 +165,7 @@ final class Optimizations_Ace_Mc_Admin_Page {
 		add_settings_field(
 			$name,
 			$title,
-			array( $this, 'checkbox_field_callback' ),
+			[ $this, 'checkbox_field_callback' ],
 			Optimizations_Ace_Mc_Settings::PAGE_SLUG,
 			$section,
 			[

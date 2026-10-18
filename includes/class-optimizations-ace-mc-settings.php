@@ -43,7 +43,7 @@ final class Optimizations_Ace_Mc_Settings {
 	 * @since 1.0.9
 	 * @var array<string, bool>
 	 */
-	private array $settings = [];
+	private array $settings;
 
 	/**
 	 * Constructor.
@@ -125,7 +125,7 @@ final class Optimizations_Ace_Mc_Settings {
 		$sanitized = [];
 
 		foreach ( array_keys( self::DEFAULT_SETTINGS ) as $key ) {
-			$sanitized[ $key ] = self::is_checked( $input[ $key ] ?? false );
+			$sanitized[ $key ] = $this->is_checked( $input[ $key ] ?? false );
 		}
 
 		return $sanitized;
@@ -138,8 +138,8 @@ final class Optimizations_Ace_Mc_Settings {
 	 * @param mixed $value Raw value.
 	 * @return bool Whether the value means "on".
 	 */
-	private static function is_checked( mixed $value ): bool {
-		return is_scalar( $value ) && false !== filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+	private function is_checked( mixed $value ): bool {
+		return is_scalar( $value ) && filter_var( $value, FILTER_VALIDATE_BOOLEAN );
 	}
 
 	/**

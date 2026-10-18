@@ -16,15 +16,7 @@ if ( ! defined( 'WPINC' ) ) {
  *
  * @since 1.0.9
  */
-final class Optimizations_Ace_Mc_Wpsl_Optimizations {
-
-	/**
-	 * Settings repository.
-	 *
-	 * @since 1.0.9
-	 * @var Optimizations_Ace_Mc_Settings
-	 */
-	private Optimizations_Ace_Mc_Settings $settings;
+final readonly class Optimizations_Ace_Mc_Wpsl_Optimizations {
 
 	/**
 	 * Constructor.
@@ -32,8 +24,7 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 * @since 1.0.9
 	 * @param Optimizations_Ace_Mc_Settings $settings Settings repository.
 	 */
-	public function __construct( Optimizations_Ace_Mc_Settings $settings ) {
-		$this->settings = $settings;
+	public function __construct( private Optimizations_Ace_Mc_Settings $settings ) {
 	}
 
 	/**
@@ -43,19 +34,19 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 */
 	public function register_hooks(): void {
 		if ( $this->settings->is_enabled( 'wpsl_show_store_categories' ) ) {
-			add_filter( 'wpsl_store_meta', array( $this, 'add_store_categories_to_meta' ), 10, 2 );
-			add_filter( 'wpsl_info_window_template', array( $this, 'customize_info_window_template' ) );
+			add_filter( 'wpsl_store_meta', [ $this, 'add_store_categories_to_meta' ], 10, 2 );
+			add_filter( 'wpsl_info_window_template', [ $this, 'customize_info_window_template' ] );
 		}
 
 		if ( $this->settings->is_enabled( 'wpsl_disable_rest_api' ) ) {
-			add_filter( 'wpsl_post_type_args', array( $this, 'disable_store_locator_rest_api' ) );
+			add_filter( 'wpsl_post_type_args', [ $this, 'disable_store_locator_rest_api' ] );
 		}
 
 		// Settings are saved in the admin. WP Store Locator caches the store data
 		// that the category text is part of, so drop that cache when the setting changes.
 		if ( is_admin() ) {
-			add_action( 'update_option_' . Optimizations_Ace_Mc_Settings::OPTION_NAME, array( $this, 'flush_store_cache_on_change' ), 10, 2 );
-			add_action( 'add_option_' . Optimizations_Ace_Mc_Settings::OPTION_NAME, array( $this, 'flush_store_cache_on_first_save' ), 10, 2 );
+			add_action( 'update_option_' . Optimizations_Ace_Mc_Settings::OPTION_NAME, [ $this, 'flush_store_cache_on_change' ], 10, 2 );
+			add_action( 'add_option_' . Optimizations_Ace_Mc_Settings::OPTION_NAME, [ $this, 'flush_store_cache_on_first_save' ], 10, 2 );
 		}
 	}
 
@@ -67,7 +58,6 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 * @since 1.0.9
 	 * @param mixed $store_meta Existing store meta.
 	 * @param mixed $store_id   Store ID.
-	 * @return mixed
 	 * @psalm-api
 	 */
 	public function add_store_categories_to_meta( mixed $store_meta, mixed $store_id = 0 ): mixed {
@@ -98,7 +88,6 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 *
 	 * @since 1.6.1
 	 * @param mixed $value Value.
-	 * @return string
 	 */
 	private static function text( mixed $value ): string {
 		return is_string( $value ) ? $value : '';
@@ -119,7 +108,6 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 *
 	 * @since 1.0.9
 	 * @param mixed $template Info window template from WP Store Locator.
-	 * @return mixed
 	 * @psalm-api
 	 */
 	public function customize_info_window_template( mixed $template = '' ): mixed {
@@ -144,7 +132,7 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 			. "\t" . '<p>' . esc_html( $category_label ) . ' ' . $category_text . '</p>' . "\r\n"
 			. "\t" . '<% } %>' . "\r\n";
 
-		foreach ( array( '<%= createInfoWindowActions(', '</div>' ) as $anchor ) {
+		foreach ( [ '<%= createInfoWindowActions(', '</div>' ] as $anchor ) {
 			$position = strrpos( $template, $anchor );
 
 			if ( false !== $position ) {
@@ -185,7 +173,7 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	public function flush_store_cache_on_first_save( mixed $option, mixed $value ): void {
 		unset( $option );
 
-		$this->flush_store_cache_on_change( array(), $value );
+		$this->flush_store_cache_on_change( [], $value );
 	}
 
 	/**
@@ -195,7 +183,6 @@ final class Optimizations_Ace_Mc_Wpsl_Optimizations {
 	 *
 	 * @since 1.0.9
 	 * @param mixed $args Post type arguments.
-	 * @return mixed
 	 * @psalm-api
 	 */
 	public function disable_store_locator_rest_api( mixed $args ): mixed {

@@ -39,14 +39,13 @@ require_once __DIR__ . '/includes/class-optimizations-ace-mc.php';
 // Skipped while core is uninstalling, because core includes this file after
 // removing the registration and would otherwise have it re-added.
 if ( ! did_action( 'pre_uninstall_plugin' ) ) {
-	register_uninstall_hook( __FILE__, array( 'Optimizations_Ace_Mc_Settings', 'uninstall' ) );
+	register_uninstall_hook( __FILE__, [ 'Optimizations_Ace_Mc_Settings', 'uninstall' ] );
 }
 
 /**
  * Get the plugin coordinator instance.
  *
  * @since 1.0.0
- * @return Optimizations_Ace_Mc
  */
 function optimizations_ace_mc(): Optimizations_Ace_Mc {
 	return Optimizations_Ace_Mc::instance();

@@ -46,12 +46,9 @@ final class Optimizations_Ace_Mc {
 	 * Main instance.
 	 *
 	 * @since 1.0.0
-	 * @return self
 	 */
 	public static function instance(): self {
-		if ( null === self::$instance ) {
-			self::$instance = new self();
-		}
+		self::$instance ??= new self();
 
 		return self::$instance;
 	}

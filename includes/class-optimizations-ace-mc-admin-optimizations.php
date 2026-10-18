@@ -19,14 +19,6 @@ if ( ! defined( 'WPINC' ) ) {
 final class Optimizations_Ace_Mc_Admin_Optimizations {
 
 	/**
-	 * Settings repository.
-	 *
-	 * @since 1.0.9
-	 * @var Optimizations_Ace_Mc_Settings
-	 */
-	private Optimizations_Ace_Mc_Settings $settings;
-
-	/**
 	 * Cached date format string.
 	 *
 	 * @since 1.0.9
@@ -40,8 +32,7 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 * @since 1.0.9
 	 * @param Optimizations_Ace_Mc_Settings $settings Settings repository.
 	 */
-	public function __construct( Optimizations_Ace_Mc_Settings $settings ) {
-		$this->settings = $settings;
+	public function __construct( private readonly Optimizations_Ace_Mc_Settings $settings ) {
 	}
 
 	/**
@@ -54,9 +45,9 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 			return;
 		}
 
-		add_filter( 'manage_users_columns', array( $this, 'add_user_registration_date_column' ) );
-		add_filter( 'manage_users_custom_column', array( $this, 'display_user_registration_date_column' ), 10, 3 );
-		add_filter( 'manage_users_sortable_columns', array( $this, 'make_user_registration_date_sortable' ) );
+		add_filter( 'manage_users_columns', [ $this, 'add_user_registration_date_column' ] );
+		add_filter( 'manage_users_custom_column', [ $this, 'display_user_registration_date_column' ], 10, 3 );
+		add_filter( 'manage_users_sortable_columns', [ $this, 'make_user_registration_date_sortable' ] );
 	}
 
 	/**
@@ -66,7 +57,6 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 *
 	 * @since 1.0.9
 	 * @param mixed $columns Existing columns.
-	 * @return mixed
 	 * @psalm-api
 	 */
 	public function add_user_registration_date_column( mixed $columns ): mixed {
@@ -86,7 +76,6 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 * @param mixed  $output Custom column output from earlier callbacks.
 	 * @param string $column_name Name of the column.
 	 * @param int    $user_id User ID.
-	 * @return mixed
 	 * @psalm-api
 	 */
 	public function display_user_registration_date_column( mixed $output, string $column_name, int $user_id ): mixed {
@@ -104,7 +93,6 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 *
 	 * @since 1.0.9
 	 * @param mixed $columns Sortable columns.
-	 * @return mixed
 	 * @psalm-api
 	 */
 	public function make_user_registration_date_sortable( mixed $columns ): mixed {
@@ -143,7 +131,7 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 		}
 
 		if ( '' === $this->date_format ) {
-			$this->date_format = self::text( get_option( 'date_format' ) ) . ' ' . self::text( get_option( 'time_format' ) );
+			$this->date_format = $this->text( get_option( 'date_format' ) ) . ' ' . $this->text( get_option( 'time_format' ) );
 		}
 
 		return wp_date( $this->date_format, $timestamp );
@@ -154,9 +142,8 @@ final class Optimizations_Ace_Mc_Admin_Optimizations {
 	 *
 	 * @since 1.6.1
 	 * @param mixed $value Option value.
-	 * @return string
 	 */
-	private static function text( mixed $value ): string {
+	private function text( mixed $value ): string {
 		return is_string( $value ) ? $value : '';
 	}
 }

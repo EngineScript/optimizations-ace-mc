@@ -17,7 +17,7 @@ const added = addedPart( original, template );
  * @return {string} The markup to compare.
  */
 function collapsed( html ) {
-	return html.replace( /\s+/g, ' ' );
+	return html.replaceAll( /\s+/g, ' ' );
 }
 
 test( 'the plugin adds one piece to the template and changes nothing else', () => {
