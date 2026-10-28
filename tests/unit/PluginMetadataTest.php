@@ -33,7 +33,7 @@ final class PluginMetadataTest extends TestCase {
 	 */
 	public function test_plugin_header_uses_current_minimum_versions(): void {
 		self::assertStringContainsString( 'Requires at least: 7.0', $this->plugin_file_contents );
-		self::assertStringContainsString( 'Requires PHP: 8.2', $this->plugin_file_contents );
+		self::assertStringContainsString( 'Requires PHP: 8.3', $this->plugin_file_contents );
 	}
 
 	/**

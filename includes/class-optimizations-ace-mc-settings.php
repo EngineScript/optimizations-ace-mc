@@ -18,9 +18,9 @@ if ( ! defined( 'WPINC' ) ) {
  */
 final class Optimizations_Ace_Mc_Settings {
 
-	public const OPTION_GROUP = 'optimizations_ace_mc_group';
-	public const OPTION_NAME  = 'optimizations_ace_mc_settings';
-	public const PAGE_SLUG    = 'optimizations-ace-mc';
+	public const string OPTION_GROUP = 'optimizations_ace_mc_group';
+	public const string OPTION_NAME  = 'optimizations_ace_mc_settings';
+	public const string PAGE_SLUG    = 'optimizations-ace-mc';
 
 	/**
 	 * Default settings.
@@ -28,7 +28,7 @@ final class Optimizations_Ace_Mc_Settings {
 	 * @since 1.0.9
 	 * @var array<string, bool>
 	 */
-	private const DEFAULT_SETTINGS = [
+	private const array DEFAULT_SETTINGS = [
 		'woocommerce_show_empty_categories'   => false,
 		'woocommerce_hide_category_count'     => false,
 		'woocommerce_user_order_count_column' => false,

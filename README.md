@@ -7,7 +7,7 @@ A lightweight WordPress optimization plugin with configurable performance enhanc
 ## Requirements
 
 - WordPress 7.0+
-- PHP 8.2+
+- PHP 8.3+
 - WooCommerce (required; WordPress will not activate this plugin without it)
 - WP Store Locator (optional; only needed for the store locator options)
 

@@ -3,7 +3,7 @@ Contributors: EngineScript
 Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 7.0
 Tested up to: 7.1
-Requires PHP: 8.2
+Requires PHP: 8.3
 Stable tag: 1.6.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,7 +36,7 @@ Optimizations ACE MC is a WordPress optimization plugin that provides configurab
 = Requirements =
 
 * WordPress 7.0 or higher
-* PHP 8.2 or higher
+* PHP 8.3 or higher
 * WooCommerce (required - must be active)
 * WP Store Locator (optional - only needed for the store locator options)
 
