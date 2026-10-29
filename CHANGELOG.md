@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The translation template names the GitHub issue tracker as its bug report address, in place of a WordPress.org support forum the plugin does not have, and its source references were refreshed
 - The code uses PHP 8 forms: short arrays, constructor property promotion, `readonly` classes and properties for the optimization and admin classes, and a null-coalescing assignment. Behavior is unchanged
 - A new Rector job fails when PHP 8.3 or Rector's dead-code, code-quality, type-declaration, or early-return rules would change the code; `rector.php` skips the rules that conflict with WordPress, each with its reason. PHPCS requires the short array syntax
-- ESLint applies modern-JavaScript rules, and ESLint and Stylelint fail on a browser feature that WordPress's supported browsers lack. `package.json` overrides `smol-toml` and `katex` for their advisories; one advisory remains in `braces`, which the Markdown and CSS linters use, until a fixed release exists
+- ESLint applies modern-JavaScript rules, and ESLint and Stylelint fail on a browser feature that WordPress's supported browsers lack. `package.json` overrides `smol-toml`, `katex`, and `re2js` (used by the Markdown linter) for their advisories
 
 ## [1.6.1] - 2026-10-09
 
