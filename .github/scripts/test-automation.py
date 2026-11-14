@@ -84,11 +84,12 @@ class AutomationTests(unittest.TestCase):
 
     def test_metadata_changes_only_authoritative_headers(self) -> None:
         findings = self.findings()
-        self.assertEqual(2, len(findings))
-        before = {name: (self.root / name).read_bytes() for name in ("README.md", ".private/review.md")}
-        self.assertEqual(
-            ["optimizations-ace-mc.php", "readme.txt"], metadata.update_tested_up_to_entries(findings, "9.9")
-        )
+        self.assertEqual(1, len(findings))
+        before = {
+            name: (self.root / name).read_bytes()
+            for name in ("optimizations-ace-mc.php", "README.md", ".private/review.md")
+        }
+        self.assertEqual(["readme.txt"], metadata.update_tested_up_to_entries(findings, "9.9"))
         self.assertEqual([], metadata.get_failures("9.9", self.findings()))
         for name, content in before.items():
             self.assertEqual(content, (self.root / name).read_bytes())

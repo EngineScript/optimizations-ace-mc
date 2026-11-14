@@ -67,6 +67,9 @@ Yes, this plugin focuses on specific admin and functionality enhancements rather
 
 == Changelog ==
 
+= Unreleased =
+* Changed: "Tested up to" is declared only in `readme.txt`, not in the plugin header, as Plugin Check requires
+
 = 1.6.1 - 2026-10-09 =
 * Changed: Store categories are added to WP Store Locator's own info window template instead of replacing it, so the info window keeps everything WP Store Locator is set to show
 * Changed: The release package no longer includes `README.md` and `CHANGELOG.md`

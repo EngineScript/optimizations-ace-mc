@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Raise the minimum PHP version from 8.2 to 8.3, which WooCommerce requires; PHP 8.2 reaches end of life on December 31, 2026. The tests cover PHP 8.3 to 8.5, and the class constants declare their types, which PHP 8.3 allows
+- Declare "Tested up to" only in `readme.txt`, not in the plugin header. Plugin Check refuses the field in the plugin header, because two copies can drift apart; the scheduled WordPress version check now updates `readme.txt` only. Static analysis runs on Psalm 7.
 - The translation template is now generated locally with `composer make-pot` and committed with each change; the Update Translation File workflow was removed
 - The translation template names the GitHub issue tracker as its bug report address, in place of a WordPress.org support forum the plugin does not have, and its source references were refreshed
 - The code uses PHP 8 forms: short arrays, constructor property promotion, `readonly` classes and properties for the optimization and admin classes, and a null-coalescing assignment. Behavior is unchanged

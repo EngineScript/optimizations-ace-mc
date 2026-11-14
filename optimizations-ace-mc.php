@@ -11,7 +11,6 @@
  * Text Domain: optimizations-ace-mc
  * Domain Path: /languages
  * Requires at least: 7.0
- * Tested up to: 7.1
  * Requires PHP: 8.3
  * Requires Plugins: woocommerce
  *
