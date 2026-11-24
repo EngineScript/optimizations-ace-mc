@@ -63,10 +63,16 @@ final class Optimizations_Ace_Mc {
 	/**
 	 * Prevent unserializing.
 	 *
+	 * PHP calls __unserialize() for every unserialize() of this class; it
+	 * replaces __wakeup(), which PHP 8.5 deprecates.
+	 *
 	 * @since 1.0.7
+	 * @param array<array-key, mixed> $data The serialized properties, never used.
 	 * @throws LogicException Always; the coordinator must not be recreated from serialized data.
 	 */
-	public function __wakeup(): void {
+	public function __unserialize( array $data ): void {
+		unset( $data );
+
 		throw new LogicException( esc_html__( 'Unserializing is not allowed.', 'optimizations-ace-mc' ) );
 	}
 
