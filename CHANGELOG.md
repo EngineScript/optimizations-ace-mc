@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The plugin coordinator refuses to be unserialized from `__unserialize()` in place of `__wakeup()`, which PHP 8.5 deprecates. Behavior is unchanged
 - A new Rector job fails when PHP 8.3 or Rector's dead-code, code-quality, type-declaration, or early-return rules would change the code; `rector.php` skips the rules that conflict with WordPress, each with its reason. PHPCS requires the short array syntax
 - ESLint applies modern-JavaScript rules, and ESLint and Stylelint fail on a browser feature that WordPress's supported browsers lack. `package.json` overrides `smol-toml`, `katex`, and `re2js` (used by the Markdown linter) for their advisories
+- Stylelint checks the stylesheet against WordPress's CSS coding standards (`@wordpress/stylelint-config`) in place of `stylelint-config-standard`; the stylesheet already met them. The WordPress config needs Stylelint 17, so Stylelint stays on 17 until the config supports 18
 
 ## [1.6.1] - 2026-10-09
 
