@@ -110,7 +110,7 @@ final class PluginWiringTest extends Oam_Test_Case {
 		$this->assertTrue( $class->isFinal() );
 
 		$this->expectException( LogicException::class );
-		Optimizations_Ace_Mc::instance()->__wakeup();
+		unserialize( sprintf( 'O:%d:"%s":0:{}', strlen( Optimizations_Ace_Mc::class ), Optimizations_Ace_Mc::class ) );
 	}
 
 	/**
@@ -120,7 +120,7 @@ final class PluginWiringTest extends Oam_Test_Case {
 		$this->use_translation_with_markup();
 
 		try {
-			Optimizations_Ace_Mc::instance()->__wakeup();
+			Optimizations_Ace_Mc::instance()->__unserialize( [] );
 			$this->fail( 'Unserializing must be refused.' );
 		} catch ( LogicException $exception ) {
 			$this->assert_no_raw_markup( $exception->getMessage() );
