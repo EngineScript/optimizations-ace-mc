@@ -110,7 +110,7 @@ final class PluginWiringTest extends Oam_Test_Case {
 		$this->assertTrue( $class->isFinal() );
 
 		$this->expectException( LogicException::class );
-		unserialize( sprintf( 'O:%d:"%s":0:{}', strlen( Optimizations_Ace_Mc::class ), Optimizations_Ace_Mc::class ) );
+		Optimizations_Ace_Mc::instance()->__unserialize( [] );
 	}
 
 	/**
