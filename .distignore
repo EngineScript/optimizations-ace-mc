@@ -60,13 +60,16 @@
 /.mypy.ini
 /.ruff.toml
 /.stylelintrc.json
+/stylelint-wordpress.json
 /.yamllint.yml
 /composer.json
 /composer.lock
 /eslint.config.mjs
+/eslint.wordpress.config.mjs
 /package.json
 /package-lock.json
 /phpcs.xml
+/phpcs-wordpress.xml
 /phpmd.xml
 /phpstan.neon
 /phpunit.xml
