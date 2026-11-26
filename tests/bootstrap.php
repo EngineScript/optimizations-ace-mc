@@ -612,7 +612,11 @@ function plugins_url( $path = '', $plugin = '' ): string {
 
 oam_test_reset_state();
 
-require_once dirname( __DIR__ ) . '/optimizations-ace-mc.php';
+// PluginFileLoadTest loads the plugin file itself, in a separate process, so that coverage records
+// the file's top-level code. Its class setup sets this variable, which that process inherits.
+if ( false === getenv( 'OAM_TEST_DEFER_PLUGIN_LOAD' ) ) {
+	require_once dirname( __DIR__ ) . '/optimizations-ace-mc.php';
+}
 
 // What loading the plugin file registered, kept apart from the per-test state.
 $GLOBALS['oam_test_load'] = array(
