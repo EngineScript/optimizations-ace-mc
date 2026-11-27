@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.3
-Stable tag: 1.6.1
+Stable tag: 1.7.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,7 +67,8 @@ Yes, this plugin focuses on specific admin and functionality enhancements rather
 
 == Changelog ==
 
-= Unreleased =
+= 1.7.0 - 2026-11-26 =
+* Changed: The minimum PHP version is now 8.3, which WooCommerce requires; PHP 8.2 reaches end of life on December 31, 2026
 * Changed: "Tested up to" is declared only in `readme.txt`, not in the plugin header, as Plugin Check requires
 
 = 1.6.1 - 2026-10-09 =
